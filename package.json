@@ -1,0 +1,33 @@
+{
+  "name": "jefferson-vasconcelos-blog",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "prisma generate && vite build && tsc server.ts --module esnext --target es2022 --moduleResolution bundler --allowImportingTsExtensions --noEmit false --outDir dist-server",
+    "preview": "vite preview",
+    "server": "nodemon --exec ts-node server.ts",
+    "start": "NODE_ENV=production node dist-server/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.38.0",
+    "@prisma/client": "^6.19.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.19.7",
+    "@vitejs/plugin-react": "^5.0.0",
+    "nodemon": "^3.1.11",
+    "prisma": "^6.19.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

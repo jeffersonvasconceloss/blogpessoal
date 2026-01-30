@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #f45d2f;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.filled-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* App-like interactions */
+button:active {
+  transform: scale(0.98);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Custom Prose for Literary Content */
+.prose-custom p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.prose-custom blockquote p {
+  line-height: 1.4;
+}
+
+/* Notebook focus selection */
+::selection {
+  background-color: rgba(244, 93, 47, 0.1);
+  color: #1a1a1a;
+}
+
+.writing-area textarea::placeholder {
+  transition: opacity 0.3s ease;
+}
+
+.writing-area textarea:focus::placeholder {
+  opacity: 0.3;
+}
