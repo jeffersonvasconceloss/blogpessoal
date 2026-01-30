@@ -122,10 +122,13 @@ app.delete('/api/posts/:id', async (req, res) => {
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'dist')));
+    // The dist folder is a sibling to dist-server in the Docker container
+    const distPath = path.join(__dirname, '..', 'dist');
+    app.use(express.static(distPath));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    // Express 5 requires named parameters for wildcards
+    app.get('(.*)', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
     });
 }
 
