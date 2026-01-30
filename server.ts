@@ -126,8 +126,8 @@ if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(distPath));
 
-    // Express 5 requires named parameters for wildcards
-    app.get('(.*)', (req, res) => {
+    // Express 5 requires named parameters for wildcards (e.g., :path*)
+    app.get('/:path*', (req, res) => {
         res.sendFile(path.join(distPath, 'index.html'));
     });
 }
