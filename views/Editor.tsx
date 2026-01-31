@@ -224,62 +224,51 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
 
   return (
     <div className="flex flex-col flex-1 h-screen overflow-hidden bg-white dark:bg-background-dark">
-      {/* Top Bar: Actions */}
-      <nav className="flex items-center justify-between px-6 py-2 border-b border-gray-100 dark:border-white/5 bg-white dark:bg-background-dark">
-        <div className="flex items-center gap-4">
+      {/* Top Bar: Minimalist Actions */}
+      <nav className="flex items-center justify-between px-8 py-3 bg-white dark:bg-background-dark border-b border-gray-100 dark:border-white/5">
+        <div className="flex items-center gap-6">
           <button
             onClick={onCancel}
-            className="p-1.5 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400 dark:text-slate-500"
+            className="flex items-center gap-2 text-[12px] font-bold text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
           >
-            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            <span className="material-symbols-outlined text-[18px]">close</span>
+            <span>Fechar</span>
           </button>
-          <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 dark:bg-white/5 rounded-full border border-gray-100 dark:border-white/5">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.3)]"></div>
-            <span className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">Guardado</span>
-          </div>
+          <div className="w-px h-4 bg-gray-100 dark:bg-white/10"></div>
+          <CategoryDropdown
+            value={category}
+            onChange={setCategory}
+            options={['Pensamento', 'Escrita', 'Biblioteca', 'Projeto']}
+          />
         </div>
 
-        <div className="flex items-center gap-6">
-          <button className="text-[12px] font-bold text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors">
-            Rascunho
-          </button>
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] font-medium text-gray-300 dark:text-slate-600 italic">Salvo automaticamente</span>
           <button
             onClick={handlePublish}
-            disabled={isSaving || !title}
-            className="px-8 py-2 bg-[#ff6b00] hover:bg-[#e66000] text-white text-[11px] font-black rounded-lg transition-all shadow-lg active:scale-95 disabled:opacity-50 uppercase tracking-[0.1em]"
+            disabled={isSaving || (category !== 'Biblioteca' && !title)}
+            className="px-6 py-2 bg-[#1a1a1a] dark:bg-white text-white dark:text-black text-[11px] font-black rounded-full hover:opacity-90 transition-all active:scale-95 disabled:opacity-30 uppercase tracking-widest"
           >
-            {isSaving ? 'Aguarde...' : 'PUBLICAR'}
+            {isSaving ? 'Salvando...' : 'Publicar'}
           </button>
         </div>
       </nav>
 
-      {/* Main Formatting Toolbar */}
-      <div className="flex items-center justify-center border-b border-gray-100 dark:border-white/5 py-1.5 px-4 bg-white dark:bg-background-dark overflow-x-auto no-scrollbar shadow-sm">
-        <div className="flex items-center gap-1">
+      {/* Main Formatting Toolbar - More discrete */}
+      <div className="flex items-center justify-center py-2 px-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-0.5 max-w-[1000px] w-full justify-center">
           <ToolbarBtn icon="undo" onClick={() => applyFormatting('undo')} />
           <ToolbarBtn icon="redo" onClick={() => applyFormatting('redo')} />
           <Divider />
-          <ToolbarDropdown label="Estilo" items={[
-            { label: 'Título Grande', action: () => applyHeading('h1') },
-            { label: 'Título Médio', action: () => applyHeading('h2') },
-            { label: 'Título Pequeno', action: () => applyHeading('h3') },
-            { label: 'Texto Normal', action: () => applyHeading('p') }
-          ]} />
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5 mx-1">
             <button
               onClick={() => applyHeading('h1')}
-              className="px-3 py-1 text-[12px] font-black bg-gray-50 dark:bg-white/5 hover:bg-primary/10 rounded-lg text-gray-500 dark:text-slate-400 hover:text-primary transition-all border border-gray-100 dark:border-white/5"
-              title="Título Grande (H1)"
-            >
-              H1
-            </button>
+              className="px-2.5 py-1 text-[11px] font-black hover:bg-gray-200 dark:hover:bg-white/10 rounded-md text-gray-500 dark:text-slate-400 transition-colors"
+            >H1</button>
             <button
               onClick={() => applyHeading('h2')}
-              className="px-3 py-1 text-[12px] font-black bg-gray-50 dark:bg-white/5 hover:bg-primary/10 rounded-lg text-gray-500 dark:text-slate-400 hover:text-primary transition-all border border-gray-100 dark:border-white/5"
-              title="Título Médio (H2)"
-            >
-              H2
-            </button>
+              className="px-2.5 py-1 text-[11px] font-black hover:bg-gray-200 dark:hover:bg-white/10 rounded-md text-gray-500 dark:text-slate-400 transition-colors"
+            >H2</button>
           </div>
           <Divider />
           <ToolbarDropdown label={`${fontSize}px`} items={[
@@ -291,7 +280,6 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           <Divider />
           <ToolbarBtn icon="format_bold" onClick={() => applyFormatting('bold')} />
           <ToolbarBtn icon="format_italic" onClick={() => applyFormatting('italic')} />
-          <ToolbarBtn icon="format_strikethrough" onClick={() => applyFormatting('strikeThrough')} />
           <ToolbarBtn icon="code" onClick={() => applyFormatting('formatBlock', '<pre>')} />
           <Divider />
           <ToolbarBtn icon="link" onClick={() => setActiveModal('link')} />
@@ -301,390 +289,312 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           <ToolbarBtn icon="format_quote" onClick={() => applyHeading('blockquote')} />
           <Divider />
           <ToolbarBtn icon="format_list_bulleted" onClick={() => applyFormatting('insertUnorderedList')} />
-          <ToolbarBtn icon="format_list_numbered" onClick={() => applyFormatting('insertOrderedList')} />
-          <Divider />
           <ToolbarDropdown label="Botão" items={[
-            { label: 'Botão Principal', action: () => { setModalData(d => ({ ...d, type: 'primary' })); setActiveModal('button'); } },
-            { label: 'Botão Minimalista', action: () => { setModalData(d => ({ ...d, type: 'outline' })); setActiveModal('button'); } }
-          ]} />
-          <Divider />
-          <ToolbarDropdown label="Mais" items={[
-            { label: 'Divisor', action: () => applyFormatting('insertHorizontalRule') },
-            { label: 'Limpar Formatação', action: () => applyFormatting('removeFormat') }
+            { label: 'Principal', action: () => { setModalData(d => ({ ...d, type: 'primary' })); setActiveModal('button'); } },
+            { label: 'Minimalista', action: () => { setModalData(d => ({ ...d, type: 'outline' })); setActiveModal('button'); } }
           ]} />
           <Divider />
           <button
             onClick={() => setShowAI(!showAI)}
-            className={`p-2 rounded-lg transition-all flex items-center gap-1 ${showAI ? 'bg-orange-50 dark:bg-primary/20 text-[#ff6b00]' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+            className={`p-2 rounded-lg transition-all flex items-center gap-1 ${showAI ? 'bg-primary text-white' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-100 dark:hover:bg-white/10'}`}
           >
-            <span className={`material-symbols-outlined text-[18px] ${showAI ? 'filled-icon font-bold' : ''}`}>auto_awesome</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider hidden md:block">Inspirar</span>
+            <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
           </button>
         </div>
       </div>
+      <Divider />
+      <button
+        onClick={() => setShowAI(!showAI)}
+        className={`p-2 rounded-lg transition-all flex items-center gap-1 ${showAI ? 'bg-orange-50 dark:bg-primary/20 text-[#ff6b00]' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+      >
+        <span className={`material-symbols-outlined text-[18px] ${showAI ? 'filled-icon font-bold' : ''}`}>auto_awesome</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider hidden md:block">Inspirar</span>
+      </button>
+    </div>
+      </div >
 
-      {/* Editor Surface */}
-      <div className="flex-1 overflow-y-auto bg-white dark:bg-background-dark no-scrollbar scroll-smooth">
-        <main className="max-w-[800px] mx-auto w-full px-8 py-10 animate-fade-in relative">
+  {/* Editor Surface */ }
+  < div className = "flex-1 overflow-y-auto bg-white dark:bg-background-dark no-scrollbar scroll-smooth" >
+    <main className="max-w-[720px] mx-auto w-full px-8 py-16 animate-fade-in relative">
 
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-2 text-gray-400 dark:text-slate-500 group cursor-pointer hover:text-gray-600 dark:hover:text-slate-300 transition-colors w-fit">
-              <span className="material-symbols-outlined text-[18px]">email</span>
-              <span className="text-[13px] font-medium border-b border-transparent group-hover:border-gray-300">Cabeçalho / rodapé de e-mail</span>
+      {/* Dynamic Component: Biblioteca (Compact Notion Style) */}
+      {category === 'Biblioteca' && (
+        <div className="mb-12 flex gap-8 items-start border-b border-gray-100 dark:border-white/5 pb-12 group">
+          <div
+            onClick={() => document.getElementById('cover-upload')?.click()}
+            className="relative w-[120px] aspect-[3/4] rounded-lg shadow-xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+          >
+            {bookCover ? (
+              <img src={bookCover} alt="Capa" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                <span className="material-symbols-outlined text-3xl">add_photo_alternate</span>
+              </div>
+            )}
+            <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => setBookCover(reader.result as string);
+                reader.readAsDataURL(file);
+              }
+            }} />
+          </div>
+          <div className="flex-1 space-y-4 pt-1">
+            <input
+              type="text"
+              placeholder="Título do Livro"
+              value={bookTitle}
+              onChange={(e) => setBookTitle(e.target.value)}
+              className="w-full bg-transparent border-none focus:ring-0 p-0 text-2xl font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder:text-gray-200"
+            />
+            <input
+              type="text"
+              placeholder="Autor do Livro"
+              value={bookAuthor}
+              onChange={(e) => setBookAuthor(e.target.value)}
+              className="w-full bg-transparent border-none focus:ring-0 p-0 text-[15px] font-medium text-gray-400 placeholder:text-gray-200"
+            />
+            <div className="flex items-center gap-6 pt-2">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
+                <select
+                  value={bookStatus}
+                  onChange={(e) => setBookStatus(e.target.value as any)}
+                  className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary cursor-pointer outline-none"
+                >
+                  <option value="Lendo">Lendo</option>
+                  <option value="Lido">Lido</option>
+                  <option value="Quero Ler">Quero Ler</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Nota</span>
+                <input
+                  type="number" step="0.1" min="0" max="10"
+                  value={bookRating}
+                  onChange={(e) => setBookRating(Number(e.target.value))}
+                  className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary w-12 outline-none"
+                />
+              </div>
             </div>
+          </div>
+        </div>
+      )}
 
-            <CategoryDropdown
-              value={category}
-              onChange={setCategory}
-              options={['Pensamento', 'Escrita', 'Biblioteca', 'Projeto']}
+      {/* Dynamic Component: Projeto */}
+      {category === 'Projeto' && (
+        <div className="mb-12 grid grid-cols-2 gap-x-12 gap-y-6 text-[13px] border-b border-gray-100 dark:border-white/5 pb-10">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
+            <select value={projectStatus} onChange={(e) => setProjectStatus(e.target.value as any)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white">
+              <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Pausado">Pausado</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Tecnologias</span>
+            <input type="text" placeholder="React, AWS..." value={projectTech} onChange={(e) => setProjectTech(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white placeholder:text-gray-200" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Link</span>
+            <input type="text" placeholder="https://..." value={projectLink} onChange={(e) => setProjectLink(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Github</span>
+            <input type="text" placeholder="https://github..." value={projectGithub} onChange={(e) => setProjectGithub(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic Component: Pensamento */}
+      {category === 'Pensamento' && (
+        <div className="mb-12">
+          <textarea
+            placeholder="Qual o insight principal?"
+            value={thoughtInsight}
+            onChange={(e) => setThoughtInsight(e.target.value)}
+            className="w-full bg-transparent border-none focus:ring-0 p-0 text-3xl font-serif italic text-primary placeholder:text-gray-100 resize-none leading-relaxed"
+            rows={2}
+          />
+          <input
+            type="text"
+            placeholder="Fonte de inspiração..."
+            value={thoughtSource}
+            onChange={(e) => setThoughtSource(e.target.value)}
+            className="w-full bg-transparent border-none focus:ring-0 p-0 mt-4 text-[12px] font-bold uppercase tracking-[0.2em] text-gray-300 placeholder:text-gray-100"
+          />
+          <div className="mt-8 border-b border-gray-100 dark:border-white/5 opacity-50"></div>
+        </div>
+      )}
+
+      {/* Dynamic Component: Escrita */}
+      {category === 'Escrita' && (
+        <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo</label>
+            <input
+              type="text"
+              placeholder="Ex: Ensaio, Conto, Ensaio Técnico"
+              value={writingGenre}
+              onChange={(e) => setWritingGenre(e.target.value)}
+              className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
             />
           </div>
-
-          {/* ... (category === 'Biblioteca' remains the same but updated to use bookCover state) */}
-          {/* Dynamic Component: Biblioteca */}
-          {category === 'Biblioteca' && (
-            <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-6">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Ficha Técnica do Livro</h4>
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Título da Obra</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Meditações"
-                      value={bookTitle}
-                      onChange={(e) => setBookTitle(e.target.value)}
-                      className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none transition-all shadow-sm"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Autor / Escritor</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Marco Aurélio"
-                      value={bookAuthor}
-                      onChange={(e) => setBookAuthor(e.target.value)}
-                      className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none transition-all shadow-sm"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Status</label>
-                      <select
-                        value={bookStatus}
-                        onChange={(e) => setBookStatus(e.target.value as any)}
-                        className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none transition-all shadow-sm"
-                      >
-                        <option value="Lendo">Lendo</option>
-                        <option value="Lido">Lido</option>
-                        <option value="Quero Ler">Quero Ler</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Rating (0-10)</label>
-                      <div className="flex items-center gap-1 bg-white dark:bg-background-dark px-4 py-3 rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
-                        <input
-                          type="number"
-                          step="0.1"
-                          min="0" max="10"
-                          value={bookRating}
-                          onChange={(e) => setBookRating(Number(e.target.value))}
-                          className="w-full bg-transparent text-[14px] font-bold text-primary outline-none"
-                        />
-                        <span className="text-slate-400 text-xs font-bold">/10</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Capa & Visual</h4>
-                <div
-                  onClick={() => document.getElementById('cover-upload')?.click()}
-                  className={`relative aspect-[3/4] w-[160px] mx-auto rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center gap-3 cursor-pointer overflow-hidden ${bookCover ? 'border-primary/20 bg-primary/5' : 'border-gray-200 dark:border-white/10 hover:border-primary/40 hover:bg-primary/5'}`}
-                >
-                  {bookCover ? (
-                    <>
-                      <img src={bookCover} alt="Capa" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white">edit</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-4xl">add_photo_alternate</span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Upload Capa</span>
-                    </>
-                  )}
-                  <input
-                    id="cover-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => setBookCover(reader.result as string);
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                </div>
-                <p className="text-center text-[10px] text-slate-400 font-medium italic">Importe uma imagem de alta qualidade para a estante.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Dynamic Component: Projeto */}
-          {category === 'Projeto' && (
-            <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up space-y-8">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Configuração do Projeto</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Status de Desenvolvimento</label>
-                  <select
-                    value={projectStatus}
-                    onChange={(e) => setProjectStatus(e.target.value as any)}
-                    className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                  >
-                    <option value="Em Desenvolvimento">Em Desenvolvimento</option>
-                    <option value="Concluído">Concluído</option>
-                    <option value="Pausado">Pausado</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Tech Stack (Separado por vírgula)</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: React, Tailwind, GCP"
-                    value={projectTech}
-                    onChange={(e) => setProjectTech(e.target.value)}
-                    className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Link do Site / Demo</label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={projectLink}
-                    onChange={(e) => setProjectLink(e.target.value)}
-                    className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Github Repository</label>
-                  <input
-                    type="text"
-                    placeholder="https://github.com/..."
-                    value={projectGithub}
-                    onChange={(e) => setProjectGithub(e.target.value)}
-                    className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Dynamic Component: Pensamento */}
-          {category === 'Pensamento' && (
-            <div className="mb-12 p-8 bg-orange-50/30 dark:bg-primary/5 rounded-[40px] border border-orange-100/50 dark:border-primary/10 animate-slide-up space-y-6">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insight Central</h4>
-              <textarea
-                placeholder="Qual é a ideia principal desta reflexão?"
-                value={thoughtInsight}
-                onChange={(e) => setThoughtInsight(e.target.value)}
-                className="w-full bg-transparent border-none focus:ring-0 text-xl font-serif italic text-slate-700 dark:text-slate-300 placeholder:text-slate-300 dark:placeholder:text-white/10 resize-none min-h-[100px] leading-relaxed"
-              />
-              <div className="pt-4 border-t border-orange-100/50 dark:border-primary/10 flex items-center gap-3">
-                <span className="material-symbols-outlined text-primary text-[18px]">lightbulb</span>
-                <input
-                  type="text"
-                  placeholder="Fonte de Inspiração (Opcional)"
-                  value={thoughtSource}
-                  onChange={(e) => setThoughtSource(e.target.value)}
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-[12px] font-bold uppercase tracking-widest text-slate-500 placeholder:text-slate-300"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Dynamic Component: Escrita */}
-          {category === 'Escrita' && (
-            <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Ensaio, Conto, Ensaio Técnico"
-                  value={writingGenre}
-                  onChange={(e) => setWritingGenre(e.target.value)}
-                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Público-Alvo</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Estudantes, Desenvolvedores, Geral"
-                  value={writingAudience}
-                  onChange={(e) => setWritingAudience(e.target.value)}
-                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-8">
-            {category !== 'Biblioteca' && (
-              <>
-                <textarea
-                  ref={titleRef}
-                  placeholder="Título da Postagem"
-                  className="w-full bg-transparent border-none focus:ring-0 text-[32px] md:text-[42px] font-newsreader font-bold text-[#111] dark:text-white placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-[1.2] selection:bg-orange-100 dark:selection:bg-primary/30 no-scrollbar"
-                  value={title}
-                  rows={1}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-
-                <textarea
-                  ref={excerptRef}
-                  placeholder="Adicionar um subtítulo cativante..."
-                  className="w-full bg-transparent border-none focus:ring-0 text-[21px] md:text-[25px] font-serif text-slate-500 dark:text-slate-400 placeholder-slate-200 dark:placeholder-white/10 resize-none p-0 leading-relaxed italic selection:bg-orange-100 dark:selection:bg-primary/30 no-scrollbar"
-                  value={excerpt}
-                  rows={1}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                />
-              </>
-            )}
-
-            <div className="flex items-center gap-3 mt-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-full border border-gray-100 dark:border-white/5 group cursor-default">
-                <span className="text-[12px] font-medium text-gray-500 dark:text-slate-400">Jefferson Vasconcelos</span>
-                <button className="flex text-gray-300 dark:text-slate-600 hover:text-gray-600 dark:hover:text-slate-300">
-                  <span className="material-symbols-outlined text-[14px]">close</span>
-                </button>
-              </div>
-              <button className="w-8 h-8 rounded-full border border-dashed border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-all hover:scale-105 active:scale-95">
-                <span className="material-symbols-outlined text-[20px]">add</span>
-              </button>
-            </div>
-
-            <div className={`mt-12 pt-12 border-t border-gray-100 dark:border-white/5 transition-all duration-700 rounded-3xl ${isFocused ? 'bg-gray-50/50 dark:bg-white/[0.02] shadow-inner px-4 md:px-8 -mx-4 md:-mx-8' : ''}`}>
-              <div
-                ref={contentEditableRef}
-                contentEditable
-                suppressContentEditableWarning
-                spellCheck="true"
-                lang="pt-BR"
-                data-placeholder="Escreva sua reflexão aqui..."
-                onInput={(e) => {
-                  contentValueRef.current = e.currentTarget.innerHTML;
-                }}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-slate-200 dark:placeholder:text-white/10 min-h-[60vh] pb-64 selection:bg-orange-100 dark:selection:bg-primary/30 no-scrollbar leading-[1.8] outline-none"
-                style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
-              ></div>
-            </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Público-Alvo</label>
+            <input
+              type="text"
+              placeholder="Ex: Estudantes, Desenvolvedores, Geral"
+              value={writingAudience}
+              onChange={(e) => setWritingAudience(e.target.value)}
+              className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
+            />
           </div>
-        </main>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        {category !== 'Biblioteca' && (
+          <>
+            <textarea
+              ref={titleRef}
+              placeholder="Título sem nome"
+              className="w-full bg-transparent border-none focus:ring-0 text-[42px] font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-tight no-scrollbar"
+              value={title}
+              rows={1}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <textarea
+              ref={excerptRef}
+              placeholder="Adicionar subtítulo..."
+              className="w-full bg-transparent border-none focus:ring-0 text-xl font-medium text-gray-400 dark:text-slate-500 placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-relaxed no-scrollbar"
+              value={excerpt}
+              rows={1}
+              onChange={(e) => setExcerpt(e.target.value)}
+            />
+          </>
+        )}
+
+        <div className={`mt-10 transition-all duration-500 ${isFocused ? 'opacity-100' : 'opacity-90'}`}>
+          <div
+            ref={contentEditableRef}
+            contentEditable
+            suppressContentEditableWarning
+            spellCheck="true"
+            lang="pt-BR"
+            data-placeholder="Escreva sua reflexão aqui..."
+            onInput={(e) => {
+              contentValueRef.current = e.currentTarget.innerHTML;
+            }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-gray-100 dark:placeholder:text-white/5 min-h-[60vh] pb-64 no-scrollbar leading-[1.8] outline-none"
+            style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
+          ></div>
+        </div>
       </div>
+    </main>
+      </div >
 
-      {/* Insert Modal */}
-      {activeModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center animate-fade-in p-6">
-          <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-[440px] rounded-[32px] p-8 shadow-2xl animate-slide-up">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[18px] font-bold text-white font-newsreader">
-                {activeModal === 'link' && 'Inserir link'}
-                {activeModal === 'image' && 'Inserir imagem'}
-                {activeModal === 'audio' && 'Inserir áudio'}
-                {activeModal === 'video' && 'Inserir vídeo'}
-                {activeModal === 'button' && 'Configurar botão'}
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
-                <span className="material-symbols-outlined text-[20px]">close</span>
-              </button>
+  {/* Insert Modal */ }
+{
+  activeModal && (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center animate-fade-in p-6">
+      <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-[440px] rounded-[32px] p-8 shadow-2xl animate-slide-up">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-[18px] font-bold text-white font-newsreader">
+            {activeModal === 'link' && 'Inserir link'}
+            {activeModal === 'image' && 'Inserir imagem'}
+            {activeModal === 'audio' && 'Inserir áudio'}
+            {activeModal === 'video' && 'Inserir vídeo'}
+            {activeModal === 'button' && 'Configurar botão'}
+          </h3>
+          <button onClick={() => setActiveModal(null)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {activeModal === 'button' && (
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">Texto do Botão</label>
+              <input
+                autoFocus
+                type="text"
+                placeholder="Clique Aqui"
+                value={modalData.title}
+                onChange={(e) => setModalData(d => ({ ...d, title: e.target.value }))}
+                className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+              />
             </div>
-
-            <div className="space-y-6">
-              {activeModal === 'button' && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">Texto do Botão</label>
-                  <input
-                    autoFocus
-                    type="text"
-                    placeholder="Clique Aqui"
-                    value={modalData.title}
-                    onChange={(e) => setModalData(d => ({ ...d, title: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
-                  />
-                </div>
-              )}
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">
-                  {activeModal === 'link' ? 'URL do Link' : activeModal === 'image' ? 'URL da Imagem' : activeModal === 'audio' ? 'URL do MP3' : activeModal === 'video' ? 'URL do vídeo (Youtube/MP4)' : 'Link de Destino'}
-                </label>
-                <input
-                  autoFocus={activeModal !== 'button'}
-                  type="text"
-                  placeholder="https://..."
-                  value={modalData.url}
-                  onChange={(e) => setModalData(d => ({ ...d, url: e.target.value }))}
-                  onKeyDown={(e) => e.key === 'Enter' && handleModalConfirm()}
-                  className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={handleModalConfirm}
-              className="w-full mt-10 py-4 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-[13px] font-black uppercase tracking-[0.15em] rounded-2xl transition-all shadow-lg active:scale-[0.98] shadow-blue-500/20"
-            >
-              OK
-            </button>
+          )}
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">
+              {activeModal === 'link' ? 'URL do Link' : activeModal === 'image' ? 'URL da Imagem' : activeModal === 'audio' ? 'URL do MP3' : activeModal === 'video' ? 'URL do vídeo (Youtube/MP4)' : 'Link de Destino'}
+            </label>
+            <input
+              autoFocus={activeModal !== 'button'}
+              type="text"
+              placeholder="https://..."
+              value={modalData.url}
+              onChange={(e) => setModalData(d => ({ ...d, url: e.target.value }))}
+              onKeyDown={(e) => e.key === 'Enter' && handleModalConfirm()}
+              className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+            />
           </div>
         </div>
-      )}
 
-      {/* AI Inspiration Panel */}
-      {showAI && (
-        <div className="fixed bottom-12 right-12 w-80 bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden z-[100] animate-slide-up">
-          <div className="p-4 bg-orange-50/50 dark:bg-primary/10 border-b border-orange-100 dark:border-primary/20 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#ff6b00] text-[18px] font-bold">auto_awesome</span>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff6b00]">Poder Criativo</h4>
-            </div>
-            <button onClick={() => setShowAI(false)} className="text-orange-300 dark:text-primary/40 hover:text-[#ff6b00] dark:hover:text-primary">
-              <span className="material-symbols-outlined text-[18px]">close</span>
-            </button>
-          </div>
-          <div className="p-5 space-y-4">
-            <button
-              onClick={getInspiration}
-              disabled={loadingAI}
-              className="w-full py-3.5 bg-[#1a1a1a] dark:bg-primary text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
-            >
-              {loadingAI ? <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> : null}
-              {loadingAI ? 'Invocando...' : 'Pedir Ajuda à Musa'}
-            </button>
-
-            {inspirations.length > 0 && (
-              <div className="space-y-2 max-h-64 overflow-y-auto pr-1 no-scrollbar scroll-smooth">
-                {inspirations.map((insp, idx) => (
-                  <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-[13px] text-gray-600 dark:text-slate-300 italic border border-gray-100/50 dark:border-white/5 leading-relaxed cursor-pointer hover:bg-orange-50 dark:hover:bg-primary/10 transition-colors">
-                    "{insp}"
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+        <button
+          onClick={handleModalConfirm}
+          className="w-full mt-10 py-4 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-[13px] font-black uppercase tracking-[0.15em] rounded-2xl transition-all shadow-lg active:scale-[0.98] shadow-blue-500/20"
+        >
+          OK
+        </button>
+      </div>
     </div>
+  )
+}
+
+{/* AI Inspiration Panel */ }
+{
+  showAI && (
+    <div className="fixed bottom-12 right-12 w-80 bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden z-[100] animate-slide-up">
+      <div className="p-4 bg-orange-50/50 dark:bg-primary/10 border-b border-orange-100 dark:border-primary/20 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-[#ff6b00] text-[18px] font-bold">auto_awesome</span>
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff6b00]">Poder Criativo</h4>
+        </div>
+        <button onClick={() => setShowAI(false)} className="text-orange-300 dark:text-primary/40 hover:text-[#ff6b00] dark:hover:text-primary">
+          <span className="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+      <div className="p-5 space-y-4">
+        <button
+          onClick={getInspiration}
+          disabled={loadingAI}
+          className="w-full py-3.5 bg-[#1a1a1a] dark:bg-primary text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
+        >
+          {loadingAI ? <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> : null}
+          {loadingAI ? 'Invocando...' : 'Pedir Ajuda à Musa'}
+        </button>
+
+        {inspirations.length > 0 && (
+          <div className="space-y-2 max-h-64 overflow-y-auto pr-1 no-scrollbar scroll-smooth">
+            {inspirations.map((insp, idx) => (
+              <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-[13px] text-gray-600 dark:text-slate-300 italic border border-gray-100/50 dark:border-white/5 leading-relaxed cursor-pointer hover:bg-orange-50 dark:hover:bg-primary/10 transition-colors">
+                "{insp}"
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+    </div >
   );
 };
 
@@ -767,19 +677,20 @@ const CategoryDropdown: React.FC<{ value: Category; onChange: (v: Category) => v
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-6 py-2.5 rounded-full border-2 transition-all ${isOpen ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 dark:border-white/10 text-gray-400 dark:text-slate-500 hover:border-primary/40'}`}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
       >
-        <span className="text-[11px] font-black uppercase tracking-[0.2em]">{value}</span>
-        <span className={`material-symbols-outlined text-[18px] transition-transform ${isOpen ? 'rotate-180' : ''}`}>expand_more</span>
+        <span className={`w-2 h-2 rounded-full ${value === 'Biblioteca' ? 'bg-blue-500' : value === 'Projeto' ? 'bg-green-500' : value === 'Pensamento' ? 'bg-orange-500' : 'bg-purple-500'}`}></span>
+        <span className="text-[12px] font-bold text-gray-600 dark:text-slate-300">{value}</span>
+        <span className="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl z-[150] py-2 animate-fade-in overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-44 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/10 rounded-xl shadow-2xl z-[150] py-1 animate-fade-in overflow-hidden">
           {options.map((option) => (
             <button
               key={option}
               onClick={() => { onChange(option as Category); setIsOpen(false); }}
-              className={`w-full text-left px-5 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors ${value === option ? 'text-primary bg-primary/5' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+              className={`w-full text-left px-4 py-2.5 text-[12px] font-medium transition-colors ${value === option ? 'text-primary bg-primary/5' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-white/5'}`}
             >
               {option}
             </button>
@@ -790,6 +701,6 @@ const CategoryDropdown: React.FC<{ value: Category; onChange: (v: Category) => v
   );
 };
 
-const Divider = () => <div className="w-px h-6 bg-gray-100 dark:bg-white/10 mx-1"></div>;
+const Divider = () => <div className="w-px h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>;
 
 export default EditorView;
