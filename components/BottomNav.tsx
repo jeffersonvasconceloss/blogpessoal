@@ -6,9 +6,10 @@ interface BottomNavProps {
     currentView: AppView;
     onNavigate: (view: AppView) => void;
     isAuthenticated: boolean;
+    onOpenCustomization: () => void;
 }
 
-const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, isAuthenticated }) => {
+const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, isAuthenticated, onOpenCustomization }) => {
     return (
         <nav className="fixed bottom-0 left-0 w-full bg-white/80 dark:bg-background-dark/90 backdrop-blur-xl border-t border-gray-100 dark:border-white/5 lg:hidden flex justify-around items-center px-2 py-2 z-[100] pb-safe shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
             <NavItem
@@ -39,6 +40,12 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, isAuthen
                 label="Sobre"
                 active={currentView === AppView.ABOUT}
                 onClick={() => onNavigate(AppView.ABOUT)}
+            />
+            <NavItem
+                icon="palette"
+                label="Tema"
+                active={false}
+                onClick={onOpenCustomization}
             />
         </nav>
     );

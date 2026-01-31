@@ -13,6 +13,7 @@ import ArticleView from './views/ArticleView';
 import EditorView from './views/Editor';
 import DashboardView from './views/Dashboard';
 import LoginView from './views/Login';
+import CustomizationModal from './components/CustomizationModal';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
@@ -20,6 +21,12 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentFont, setCurrentFont] = useState(() => localStorage.getItem('blog-font') || 'Inter');
+  const [isCustomizing, setIsCustomizing] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-font', currentFont);
+  }, [currentFont]);
 
   const refreshArticles = async (isAuth = isAuthenticated) => {
     try {
@@ -146,6 +153,7 @@ const App: React.FC = () => {
           onNavigate={navigateTo}
           me={ME}
           isAuthenticated={isAuthenticated}
+          onOpenCustomization={() => setIsCustomizing(true)}
         />
       )}
 
@@ -165,6 +173,18 @@ const App: React.FC = () => {
           currentView={currentView}
           onNavigate={navigateTo}
           isAuthenticated={isAuthenticated}
+          onOpenCustomization={() => setIsCustomizing(true)}
+        />
+      )}
+
+      {isCustomizing && (
+        <CustomizationModal
+          currentFont={currentFont}
+          onSelectFont={(font) => {
+            setCurrentFont(font);
+            localStorage.setItem('blog-font', font);
+          }}
+          onClose={() => setIsCustomizing(false)}
         />
       )}
     </div>

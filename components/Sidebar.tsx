@@ -7,9 +7,10 @@ interface SidebarProps {
   onNavigate: (view: AppView) => void;
   me: Author;
   isAuthenticated: boolean;
+  onOpenCustomization: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, me, isAuthenticated }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, me, isAuthenticated, onOpenCustomization }) => {
   return (
     <aside className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-background-dark border-r border-gray-100 dark:border-white/[0.03] hidden lg:flex flex-col justify-between p-8 z-50">
       <div className="flex flex-col gap-10">
@@ -69,6 +70,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, me, isAuthen
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
+          <NavItem
+            icon="palette"
+            label="Personalizar"
+            active={false}
+            onClick={onOpenCustomization}
+          />
+          <div className="my-2" />
           <SocialLink icon="share" label="Instagram" href="#" />
           <SocialLink icon="link" label="LinkedIn" href="#" />
         </div>

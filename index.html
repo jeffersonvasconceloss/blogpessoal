@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Inter:wght@300;400;500;600;700;900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700;900&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet">
@@ -28,8 +28,8 @@
                         "surface-dark": "#1a1a1a",
                     },
                     fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "serif": ["Lora", "serif"],
+                        "display": ["var(--font-display)", "sans-serif"],
+                        "serif": ["var(--font-serif)", "serif"],
                         "newsreader": ["Newsreader", "serif"]
                     }
                 }
@@ -37,16 +37,29 @@
         }
     </script>
     <style>
+        :root {
+            --font-display: 'Inter';
+            --font-serif: 'Lora';
+        }
+
+        /* Font Variations */
+        [data-font="Inter"] { --font-display: 'Inter'; --font-serif: 'Lora'; }
+        [data-font="Lora"] { --font-display: 'Lora'; --font-serif: 'Lora'; }
+        [data-font="Literata"] { --font-display: 'Literata'; --font-serif: 'Literata'; }
+        [data-font="Mulish"] { --font-display: 'Mulish'; --font-serif: 'Lora'; }
+        [data-font="Crimson Text"] { --font-display: 'Crimson Text'; --font-serif: 'Crimson Text'; }
+        [data-font="Gentium Book Plus"] { --font-display: 'Gentium Book Plus'; --font-serif: 'Gentium Book Plus'; }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-display), sans-serif;
         }
 
         .font-serif {
-            font-family: 'Lora', serif;
+            font-family: var(--font-serif), serif;
         }
 
         .font-newsreader {
