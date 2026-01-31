@@ -51,48 +51,59 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
 
       <article className="max-w-[700px] w-full pt-20 pb-32 px-6 animate-fade-in flex flex-col">
 
-        {/* Premium Header - Substack Inspired Hierarchy */}
-        <header className="mb-14 border-b border-gray-100 dark:border-white/5 pb-10">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-md">
-                {article.category}
-              </span>
-              <div className="h-[1px] flex-1 bg-gray-100 dark:bg-white/5"></div>
-            </div>
-
-            <h1 className="text-3xl md:text-4xl font-newsreader font-bold leading-tight text-slate-900 dark:text-white tracking-tight">
-              {article.title}
-            </h1>
-
-            <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-serif leading-relaxed italic border-l-2 border-slate-200 dark:border-white/10 pl-5 py-0.5">
-              {article.excerpt}
-            </p>
-
-            <div className="flex items-center justify-between pt-4">
-              <div className="flex items-center gap-3">
-                <div
-                  className="size-10 rounded-full bg-cover bg-center ring-2 ring-white/10 shadow-lg"
-                  style={{ backgroundImage: `url("${article.author.avatar}")` }}
-                />
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                    {article.author.name}
-                  </span>
-                  <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-0.5">
-                    <span>{article.date}</span>
-                    <span className="size-1 bg-slate-400 rounded-full opacity-30"></span>
-                    <span>{article.readTime} LEITURA</span>
-                  </div>
-                </div>
+        {/* Premium Header - Conditionally simplified for Pensamento */}
+        {article.category !== 'Pensamento' ? (
+          <header className="mb-14 border-b border-gray-100 dark:border-white/5 pb-10">
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-md">
+                  {article.category}
+                </span>
+                <div className="h-[1px] flex-1 bg-gray-100 dark:bg-white/5"></div>
               </div>
 
-              <button className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-black/10">
-                Subscribe
-              </button>
+              <h1 className="text-3xl md:text-4xl font-newsreader font-bold leading-tight text-slate-900 dark:text-white tracking-tight">
+                {article.title}
+              </h1>
+
+              <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-serif leading-relaxed italic border-l-2 border-slate-200 dark:border-white/10 pl-5 py-0.5">
+                {article.excerpt}
+              </p>
+
+              <div className="flex items-center justify-between pt-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="size-10 rounded-full bg-cover bg-center ring-2 ring-white/10 shadow-lg"
+                    style={{ backgroundImage: `url("${article.author.avatar}")` }}
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                      {article.author.name}
+                    </span>
+                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-0.5">
+                      <span>{article.date}</span>
+                      <span className="size-1 bg-slate-400 rounded-full opacity-30"></span>
+                      <span>{article.readTime} LEITURA</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-black/10">
+                  Subscribe
+                </button>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+        ) : (
+          <header className="mb-16 pt-10 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/50">
+                {article.date}
+              </span>
+              <div className="h-10 w-[1px] bg-gradient-to-b from-primary/30 to-transparent"></div>
+            </div>
+          </header>
+        )}
 
         {/* Deep Reading Content */}
         <div className="prose-custom dark:prose-invert font-serif text-[18px] leading-[1.6] text-slate-800 dark:text-slate-300">
