@@ -83,7 +83,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
           </button>
         </div>
         <div className="flex-1 flex justify-center pointer-events-auto">
-          <div className="size-9 md:size-10 rounded-xl bg-cover bg-center border border-gray-100 dark:border-white/10 shadow-sm" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
+          <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 dark:text-white opacity-40">Mindshelf</span>
         </div>
         <div className="w-[80px] md:w-[100px]" /> {/* Spacer for symmetry */}
       </nav>
@@ -100,11 +100,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
               {article.title}
             </h1>
 
-            <div className="flex items-center gap-3.5 py-3 border-y border-gray-100 dark:border-white/5 w-full">
-              <div
-                className="size-8 md:size-9 rounded-full bg-cover bg-center ring-2 ring-black/5 dark:ring-white/10"
-                style={{ backgroundImage: `url("${article.author.avatar}")` }}
-              />
+            <div className="flex items-center gap-4 py-3 border-y border-gray-100 dark:border-white/5 w-full">
               <div className="flex flex-col">
                 <span className="text-[10px] md:text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none">{article.author.name}</span>
                 <span className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
@@ -119,24 +115,24 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
         <div className="prose-custom dark:prose-invert font-serif text-[19px] leading-[1.8] text-slate-800 dark:text-slate-200">
           {/* Metadata Cards */}
           {article.category === 'Biblioteca' && article.bookInfo && (
-            <div className="mb-8 p-5 md:p-8 bg-slate-50 dark:bg-white/[0.01] rounded-[32px] border border-gray-100 dark:border-white/5 flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+            <div className="mb-12 flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start py-8 border-b border-gray-100 dark:border-white/5">
               {article.bookInfo.coverUrl && (
-                <div className="w-[100px] md:w-[130px] shrink-0 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl transition-transform hover:scale-105 duration-500">
+                <div className="w-[110px] md:w-[130px] shrink-0 aspect-[2/3] rounded-sm overflow-hidden shadow-sm">
                   <img src={article.bookInfo.coverUrl} className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="flex-1 text-center md:text-left">
-                <div className="flex flex-col gap-1.5 md:gap-2">
-                  <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-primary/80">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">
                     {article.bookInfo.status}
                   </span>
-                  <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white leading-tight">
+                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white leading-tight">
                     {article.bookInfo.title}
                   </h3>
-                  <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-serif italic mb-2">por {article.bookInfo.author}</p>
+                  <p className="text-lg text-slate-500 font-serif italic mb-4">por {article.bookInfo.author}</p>
                   <div className="flex items-center justify-center md:justify-start gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`material-symbols-outlined text-[14px] md:text-[16px] ${i < (article.bookInfo?.rating || 0) / 2 ? 'text-primary filled-icon' : 'text-slate-200 dark:text-white/5'}`}>
+                      <span key={i} className={`material-symbols-outlined text-[15px] ${i < (article.bookInfo?.rating || 0) / 2 ? 'text-primary filled-icon' : 'text-slate-200 dark:text-white/5'}`}>
                         star
                       </span>
                     ))}
@@ -147,36 +143,27 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
           )}
 
           {article.category === 'Projeto' && article.projectInfo && (
-            <div className="mb-8 p-6 bg-slate-50 dark:bg-white/[0.02] rounded-3xl border border-gray-100 dark:border-white/5">
+            <div className="mb-12 py-8 border-b border-gray-100 dark:border-white/5">
               <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-md ${article.projectInfo.status === 'Concluído' ? 'bg-green-500/10 text-green-500' :
-                      article.projectInfo.status === 'Em Desenvolvimento' ? 'bg-blue-500/10 text-blue-500' :
-                        'bg-slate-500/10 text-slate-500'
-                      }`}>
-                      {article.projectInfo.status}
-                    </span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-primary mr-4">{article.projectInfo.status}</span>
+                    {article.projectInfo.techStack.map(tech => (
+                      <span key={tech} className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">#{tech}</span>
+                    ))}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-4">
                     {article.projectInfo.link && (
-                      <a href={article.projectInfo.link} target="_blank" rel="noopener noreferrer" className="size-9 flex items-center justify-center bg-white dark:bg-white/5 rounded-xl hover:text-primary transition-all border border-gray-100 dark:border-white/5 shadow-sm">
+                      <a href={article.projectInfo.link} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-primary transition-all">
                         <span className="material-symbols-outlined text-[20px]">link</span>
                       </a>
                     )}
                     {article.projectInfo.github && (
-                      <a href={article.projectInfo.github} target="_blank" rel="noopener noreferrer" className="size-9 flex items-center justify-center bg-white dark:bg-white/5 rounded-xl hover:text-primary transition-all border border-gray-100 dark:border-white/5 shadow-sm">
+                      <a href={article.projectInfo.github} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-primary transition-all">
                         <span className="material-symbols-outlined text-[20px]">code</span>
                       </a>
                     )}
                   </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {article.projectInfo.techStack.map(tech => (
-                    <span key={tech} className="px-3 py-1.5 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-lg text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                      {tech}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>

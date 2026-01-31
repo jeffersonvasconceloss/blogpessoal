@@ -28,20 +28,13 @@ const FeedView: React.FC<FeedProps> = ({ onArticleClick, articles }) => {
                 className="group cursor-pointer border-b border-gray-100 dark:border-white/5 pb-12 transition-all animate-fade-in"
                 onClick={() => onArticleClick(article)}
               >
-                {/* Header Information */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="size-10 rounded-full bg-cover bg-center ring-2 ring-primary/5 shadow-md"
-                      style={{ backgroundImage: `url("${article.author.avatar}")` }}
-                    />
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[14px] font-black text-slate-900 dark:text-white uppercase tracking-tight">{article.author.name}</span>
-                        <span className="material-symbols-outlined text-[14px] text-primary filled-icon">verified</span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{article.date}</span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-black text-slate-900 dark:text-white uppercase tracking-tight">{article.author.name}</span>
+                      <span className="material-symbols-outlined text-[14px] text-primary filled-icon">verified</span>
                     </div>
+                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{article.date}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <button className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
@@ -111,13 +104,9 @@ const FeedView: React.FC<FeedProps> = ({ onArticleClick, articles }) => {
               <div className="flex flex-col gap-4">
                 {/* Author Row */}
                 <div className="flex items-center gap-2 mb-1">
-                  <div
-                    className="size-6 rounded-full bg-cover bg-center ring-1 ring-black/5 dark:ring-white/10"
-                    style={{ backgroundImage: `url("${article.author.avatar}")` }}
-                  />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">{article.author.name}</span>
+                  <span className="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider">{article.author.name}</span>
                   <span className="text-slate-400 text-[10px]">•</span>
-                  <span className="text-slate-400 text-[10px] uppercase tracking-widest">{article.date}</span>
+                  <span className="text-slate-400 text-[9px] uppercase tracking-widest">{article.date}</span>
                 </div>
 
                 {/* Content Wrapper (Text + Image) */}

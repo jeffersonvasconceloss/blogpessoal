@@ -11,10 +11,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ me, onBrandClick }) => {
     return (
         <header className="lg:hidden sticky top-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 px-6 py-4 z-40 flex items-center justify-between pt-safe">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={onBrandClick}>
-                <div
-                    className="size-9 rounded-full ring-2 ring-primary/10 group-active:scale-90 transition-transform bg-center bg-no-repeat bg-cover shadow-sm"
-                    style={{ backgroundImage: `url("${me.avatar}")` }}
-                />
                 <div className="flex flex-col">
                     <h1 className="text-[17px] font-black leading-tight dark:text-white tracking-tight -mb-0.5">{me.name.split(' ')[0]}</h1>
                     <p className="text-primary text-[9px] font-black uppercase tracking-[0.2em] leading-none opacity-80">Mindshelf</p>
