@@ -29,71 +29,70 @@ const FeedView: React.FC<FeedProps> = ({ onArticleClick, articles }) => {
                 onClick={() => onArticleClick(article)}
               >
                 {/* Header Information */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
                     <div
-                      className="size-8 rounded-full bg-cover bg-center ring-1 ring-black/5 dark:ring-white/10"
+                      className="size-10 rounded-full bg-cover bg-center ring-2 ring-primary/5 shadow-md"
                       style={{ backgroundImage: `url("${article.author.avatar}")` }}
                     />
                     <div className="flex flex-col">
-                      <div className="flex items-center gap-1">
-                        <span className="text-[13px] font-bold text-slate-900 dark:text-white">{article.author.name}</span>
-                        <span className="material-symbols-outlined text-[13px] text-slate-400">verified</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[14px] font-black text-slate-900 dark:text-white uppercase tracking-tight">{article.author.name}</span>
+                        <span className="material-symbols-outlined text-[14px] text-primary filled-icon">verified</span>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-medium">{article.date}</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{article.date}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button className="text-primary text-[12px] font-bold hover:opacity-80 transition-opacity">Subscribe</button>
-                    <button className="text-slate-400">
-                      <span className="material-symbols-outlined text-[16px]">more_horiz</span>
+                  <div className="flex items-center gap-1">
+                    <button className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+                      <span className="material-symbols-outlined text-[20px]">more_horiz</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Optional Intro/Title */}
                 {article.title && (
-                  <p className="text-[14px] font-medium text-slate-700 dark:text-slate-200 mb-2.5 leading-relaxed">
-                    {article.title} 😯 ➔
+                  <p className="text-[15px] font-bold text-slate-800 dark:text-slate-100 mb-4 leading-relaxed flex items-center gap-2">
+                    {article.title} <span className="text-primary">➔</span>
                   </p>
                 )}
 
-                {/* The Thought Box - Compact & High Contrast */}
-                <div className="relative w-full bg-[#1a0f0f] dark:bg-[#160a0a] rounded-[20px] p-6 md:p-8 mb-4 overflow-hidden shadow-xl shadow-black/20 group-hover:scale-[1.005] transition-transform duration-500">
-                  <span className="material-symbols-outlined text-3xl text-white/5 mb-4 block select-none leading-none">format_quote</span>
+                {/* The Thought Box - Professional & Deep Focus */}
+                <div className="relative w-full bg-slate-50 dark:bg-white/[0.02] rounded-[32px] p-8 md:p-10 mb-6 border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-500 group-hover:border-primary/20">
+                  <span className="material-symbols-outlined absolute -top-4 -left-2 text-[100px] text-primary/[0.03] rotate-12 select-none pointer-events-none">format_quote</span>
 
-                  <div className="space-y-6">
-                    <p className="text-[16px] md:text-[18px] font-serif text-slate-100 leading-[1.55] italic">
-                      {article.thoughtInfo?.coreInsight || article.excerpt}
+                  <div className="relative z-10 space-y-6">
+                    <p className="text-[18px] md:text-[20px] font-serif text-slate-700 dark:text-slate-200 leading-[1.7] italic">
+                      "{article.thoughtInfo?.coreInsight || article.excerpt}"
                     </p>
 
-                    <div className="flex items-center justify-between pt-4">
-                      <span className="text-[11px] font-newsreader italic text-white/30 tracking-wide uppercase">
-                        {article.author.name.toLowerCase().split(' ')[0]}
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-200/50 dark:border-white/5">
+                      <span className="text-[10px] font-black text-primary/50 uppercase tracking-[0.3em]">
+                        {article.author.name}
                       </span>
-                      <button className="text-white/20 hover:text-white transition-colors">
-                        <span className="material-symbols-outlined text-[18px]">bookmark</span>
+                      <button className="text-slate-300 dark:text-white/20 hover:text-primary transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">bookmark</span>
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Footer Interactions */}
-                <div className="flex items-center gap-8 pl-1">
-                  <button className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[20px] group-active/icon:scale-125 transition-transform">favorite</span>
-                    <span className="text-[12px] font-bold">{article.likes}</span>
+                <div className="flex items-center gap-10 pl-2">
+                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
+                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">favorite</span>
+                    <span className="text-[12px] font-black tracking-tighter">{article.likes}</span>
                   </button>
-                  <button className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[20px] group-active/icon:scale-125 transition-transform">chat_bubble</span>
-                    <span className="text-[12px] font-bold">{article.commentsCount}</span>
+                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
+                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">chat_bubble</span>
+                    <span className="text-[12px] font-black tracking-tighter">{article.commentsCount}</span>
                   </button>
-                  <button className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[20px] group-active/icon:scale-125 transition-transform">sync</span>
-                    <span className="text-[12px] font-bold">24</span>
+                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
+                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">sync</span>
+                    <span className="text-[12px] font-black tracking-tighter">24</span>
                   </button>
-                  <button className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[20px] group-active/icon:scale-125 transition-transform">ios_share</span>
+                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon ml-auto">
+                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">ios_share</span>
                   </button>
                 </div>
               </article>
