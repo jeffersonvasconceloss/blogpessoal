@@ -96,7 +96,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
               {article.category}
             </span>
 
-            <h1 className="text-3xl md:text-5xl font-display font-black leading-[1.1] text-slate-900 dark:text-white tracking-tight mb-4 md:mb-8 text-center md:text-left">
+            <h1 className="text-4xl md:text-[64px] font-display font-black leading-[1.05] text-slate-900 dark:text-white tracking-tight mb-6 md:mb-12 text-center md:text-left">
               {article.title}
             </h1>
 
@@ -112,7 +112,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
         </header>
 
         {/* Content Section */}
-        <div className="prose-custom dark:prose-invert font-serif text-[19px] leading-[1.8] text-slate-800 dark:text-slate-200">
+        <div className="prose-custom dark:prose-invert font-sans text-[20px] md:text-[21px] leading-[1.75] text-slate-900 dark:text-slate-100 antialiased font-normal">
           {/* Metadata Cards */}
           {article.category === 'Biblioteca' && article.bookInfo && (
             <div className="mb-12 flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start py-8 border-b border-gray-100 dark:border-white/5">
@@ -232,34 +232,34 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
           </div>
         </div>
 
-        {/* Refined Minimalist Interaction Bar (Matching Reference) */}
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 w-[94%] max-w-[540px] h-16 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-2xl border border-gray-100 dark:border-white/5 rounded-full z-[100] px-8 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
-          <div className="flex items-center gap-10">
+        {/* Minimalist Floating Interaction Bar */}
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] h-14 bg-white/80 dark:bg-[#0f0f0f]/80 backdrop-blur-2xl border border-gray-100 dark:border-white/5 rounded-full z-[100] px-6 flex items-center justify-between shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-all hover:w-[92%] hover:max-w-[420px]">
+          <div className="flex items-center gap-8">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-2.5 transition-all ${isLiked ? 'text-primary' : 'text-slate-400 hover:text-primary'}`}
+              className={`flex items-center gap-2 transition-all ${isLiked ? 'text-primary' : 'text-slate-400 hover:text-primary'}`}
             >
-              <span className={`material-symbols-outlined text-[24px] ${isLiked ? 'filled-icon scale-110' : 'hover:scale-110'}`}>favorite</span>
-              <span className="text-[14px] font-bold tracking-tight">{likes}</span>
+              <span className={`material-symbols-outlined text-[22px] ${isLiked ? 'filled-icon scale-110' : ''}`}>favorite</span>
+              <span className="text-[13px] font-black">{likes}</span>
             </button>
 
             <button
               onClick={() => setShowCommentBox(!showCommentBox)}
-              className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all"
+              className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all"
             >
-              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">chat_bubble</span>
-              <span className="text-[14px] font-bold tracking-tight">{comments.length}</span>
+              <span className="material-symbols-outlined text-[22px]">chat_bubble</span>
+              <span className="text-[13px] font-black">{comments.length}</span>
             </button>
 
-            <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all">
-              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">sync</span>
-              <span className="text-[14px] font-bold tracking-tight">26</span>
+            <button className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all">
+              <span className="material-symbols-outlined text-[22px]">sync</span>
+              <span className="text-[13px] font-black">26</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="p-2.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">ios_share</span>
+          <div className="flex items-center">
+            <button className="size-10 flex items-center justify-center text-slate-400 hover:text-primary transition-all">
+              <span className="material-symbols-outlined text-[22px]">ios_share</span>
             </button>
           </div>
         </div>
