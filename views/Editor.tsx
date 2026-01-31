@@ -41,6 +41,8 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
   // Writing Specific State
   const [writingGenre, setWritingGenre] = useState(article?.writingInfo?.genre || '');
   const [writingAudience, setWritingAudience] = useState(article?.writingInfo?.targetAudience || '');
+  const [fontSize, setFontSize] = useState(16);
+  const [isFocused, setIsFocused] = useState(false);
 
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const excerptRef = useRef<HTMLTextAreaElement>(null);
@@ -214,7 +216,31 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           <ToolbarDropdown label="Estilo" items={[
             { label: 'Título Grande', action: () => applyHeading('h1') },
             { label: 'Título Médio', action: () => applyHeading('h2') },
+            { label: 'Título Pequeno', action: () => applyHeading('h3') },
             { label: 'Texto Normal', action: () => applyHeading('p') }
+          ]} />
+          <div className="flex items-center gap-0.5">
+            <button
+              onClick={() => applyHeading('h1')}
+              className="px-3 py-1 text-[12px] font-black bg-gray-50 dark:bg-white/5 hover:bg-primary/10 rounded-lg text-gray-500 dark:text-slate-400 hover:text-primary transition-all border border-gray-100 dark:border-white/5"
+              title="Título Grande (H1)"
+            >
+              H1
+            </button>
+            <button
+              onClick={() => applyHeading('h2')}
+              className="px-3 py-1 text-[12px] font-black bg-gray-50 dark:bg-white/5 hover:bg-primary/10 rounded-lg text-gray-500 dark:text-slate-400 hover:text-primary transition-all border border-gray-100 dark:border-white/5"
+              title="Título Médio (H2)"
+            >
+              H2
+            </button>
+          </div>
+          <Divider />
+          <ToolbarDropdown label={`${fontSize}px`} items={[
+            { label: '13px', action: () => setFontSize(13) },
+            { label: '14px', action: () => setFontSize(14) },
+            { label: '15px', action: () => setFontSize(15) },
+            { label: '16px', action: () => setFontSize(16) }
           ]} />
           <Divider />
           <ToolbarBtn icon="format_bold" onClick={() => applyFormatting('bold')} />
@@ -503,18 +529,21 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
               </button>
             </div>
 
-            <div className="mt-12 pt-12 border-t border-gray-100 dark:border-white/5">
+            <div className={`mt-12 pt-12 border-t border-gray-100 dark:border-white/5 transition-all duration-700 rounded-3xl ${isFocused ? 'bg-gray-50/50 dark:bg-white/[0.02] shadow-inner px-4 md:px-8 -mx-4 md:-mx-8' : ''}`}>
               <div
                 ref={contentEditableRef}
                 contentEditable
                 suppressContentEditableWarning
                 spellCheck="true"
                 lang="pt-BR"
+                data-placeholder="Escreva sua reflexão aqui..."
                 onInput={(e) => {
                   contentValueRef.current = e.currentTarget.innerHTML;
                 }}
-                className="w-full bg-transparent border-none focus:outline-none text-[21px] md:text-[23px] font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-slate-200 dark:placeholder:text-white/10 min-h-[60vh] pb-64 selection:bg-orange-100 dark:selection:bg-primary/30 no-scrollbar leading-[1.8] outline-none"
-                style={{ direction: 'ltr', textAlign: 'left' }}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-slate-200 dark:placeholder:text-white/10 min-h-[60vh] pb-64 selection:bg-orange-100 dark:selection:bg-primary/30 no-scrollbar leading-[1.8] outline-none"
+                style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
               ></div>
             </div>
           </div>
