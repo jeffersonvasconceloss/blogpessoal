@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,12 +20,15 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.get('/api/posts', async (req, res) => {
     try {
         const { all } = req.query;
+        // Fix for type strictness in Prisma queries
+        const whereCond = (all === 'true' ? {} : { published: true }) as any;
         const posts = await prisma.post.findMany({
-            where: all === 'true' ? {} : { published: true },
+            where: whereCond,
             orderBy: { date: 'desc' }
         });
         res.json(posts);
     } catch (error) {
+        console.error('Error fetching posts:', error);
         res.status(500).json({ error: 'Failed to fetch posts' });
     }
 });
@@ -47,17 +51,19 @@ app.get('/api/posts/:id', async (req, res) => {
 app.post('/api/posts', async (req, res) => {
     try {
         const {
-            title, slug, excerpt, content, category, date, readTime, imageUrl,
+            title, slug: providedSlug, excerpt, content, category, date, readTime, imageUrl,
             author, bookInfo, projectInfo, thoughtInfo, writingInfo, published
         } = req.body;
+
+        const slug = providedSlug || `${(title || 'rascunho').toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-')}-${Date.now()}`;
 
         const post = await prisma.post.create({
             data: {
                 title: title || 'Sem título',
-                slug: slug || `${(title || 'rascunho').toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+                slug,
                 excerpt: excerpt || '',
                 content: content || '',
-                category,
+                category: category || 'Pensamento',
                 date: date ? new Date(date) : new Date(),
                 readTime: readTime || '1 min',
                 imageUrl: imageUrl || '',
@@ -66,17 +72,21 @@ app.post('/api/posts', async (req, res) => {
                 authorAvatar: author?.avatar || '',
                 authorEmail: author?.email || '',
                 authorBio: author?.bio || '',
-                bookInfo: bookInfo || undefined,
-                projectInfo: projectInfo || undefined,
-                thoughtInfo: thoughtInfo || undefined,
-                writingInfo: writingInfo || undefined,
-                published: published ?? false,
-            }
+                published: !!published,
+                bookInfo: bookInfo || null,
+                projectInfo: projectInfo || null,
+                thoughtInfo: thoughtInfo || null,
+                writingInfo: writingInfo || null,
+            } as any
         });
         res.json(post);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create post' });
+    } catch (error: any) {
+        console.error('Error creating post:', error);
+        res.status(500).json({
+            error: 'Failed to create post',
+            details: error.message || 'Unknown database error',
+            code: error.code
+        });
     }
 });
 
@@ -101,16 +111,20 @@ app.put('/api/posts/:id', async (req, res) => {
                 authorAvatar: author?.avatar,
                 authorEmail: author?.email,
                 authorBio: author?.bio,
-                bookInfo: bookInfo || undefined,
-                projectInfo: projectInfo || undefined,
-                thoughtInfo: thoughtInfo || undefined,
-                writingInfo: writingInfo || undefined,
-                published: published !== undefined ? published : undefined,
-            }
+                bookInfo: bookInfo !== undefined ? bookInfo : undefined,
+                projectInfo: projectInfo !== undefined ? projectInfo : undefined,
+                thoughtInfo: thoughtInfo !== undefined ? thoughtInfo : undefined,
+                writingInfo: writingInfo !== undefined ? writingInfo : undefined,
+                published: published !== undefined ? !!published : undefined,
+            } as any
         });
         res.json(post);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update post' });
+        console.error('Error updating post:', error);
+        res.status(500).json({
+            error: 'Failed to update post',
+            details: error instanceof Error ? error.message : 'Unknown database error'
+        });
     }
 });
 
