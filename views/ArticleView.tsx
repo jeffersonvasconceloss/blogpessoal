@@ -88,23 +88,28 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
         <div className="w-[80px] md:w-[100px]" /> {/* Spacer for symmetry */}
       </nav>
 
-      <article className="max-w-[760px] w-full pt-20 pb-40 px-6 animate-fade-in flex flex-col">
+      <article className="max-w-[760px] w-full pt-12 md:pt-24 pb-40 px-6 animate-fade-in flex flex-col">
         {/* Unified High-Hierarchy Header - Tightened & Organized */}
-        <header className="mb-8">
+        <header className="mb-6 md:mb-10">
           <div className="flex flex-col items-center md:items-start">
-            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-primary/50 mb-2">
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] text-primary mb-1.5 md:mb-2 opacity-80">
               {article.category}
             </span>
 
-            <h1 className="text-4xl md:text-5xl font-display font-black leading-[1.1] text-slate-900 dark:text-white tracking-tight mb-6 text-center md:text-left">
+            <h1 className="text-3xl md:text-5xl font-display font-black leading-[1.1] text-slate-900 dark:text-white tracking-tight mb-4 md:mb-8 text-center md:text-left">
               {article.title}
             </h1>
 
-            <div className="flex items-center gap-4 py-3 border-y border-gray-100 dark:border-white/5 w-full">
-              <div className="size-9 rounded-full bg-cover bg-center ring-1 ring-black/5" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
+            <div className="flex items-center gap-3.5 py-3 border-y border-gray-100 dark:border-white/5 w-full">
+              <div
+                className="size-8 md:size-9 rounded-full bg-cover bg-center ring-2 ring-black/5 dark:ring-white/10"
+                style={{ backgroundImage: `url("${article.author.avatar}")` }}
+              />
               <div className="flex flex-col">
-                <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-tight">{article.author.name}</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{article.date} • {article.readTime}</span>
+                <span className="text-[10px] md:text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none">{article.author.name}</span>
+                <span className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+                  {article.date} <span className="mx-1 opacity-30">•</span> {article.readTime}
+                </span>
               </div>
             </div>
           </div>
@@ -114,24 +119,24 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
         <div className="prose-custom dark:prose-invert font-serif text-[19px] leading-[1.8] text-slate-800 dark:text-slate-200">
           {/* Metadata Cards */}
           {article.category === 'Biblioteca' && article.bookInfo && (
-            <div className="mb-8 p-6 bg-slate-50 dark:bg-white/[0.02] rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col md:flex-row gap-8 items-center">
+            <div className="mb-8 p-5 md:p-8 bg-slate-50 dark:bg-white/[0.01] rounded-[32px] border border-gray-100 dark:border-white/5 flex flex-col md:flex-row gap-6 md:gap-10 items-center">
               {article.bookInfo.coverUrl && (
-                <div className="w-[120px] shrink-0 aspect-[2/3] rounded-xl overflow-hidden shadow-xl">
+                <div className="w-[100px] md:w-[130px] shrink-0 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl transition-transform hover:scale-105 duration-500">
                   <img src={article.bookInfo.coverUrl} className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="flex-1 text-center md:text-left">
-                <div className="flex flex-col gap-2">
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary mb-1">
+                <div className="flex flex-col gap-1.5 md:gap-2">
+                  <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-primary/80">
                     {article.bookInfo.status}
                   </span>
-                  <h3 className="text-2xl font-display font-black text-slate-900 dark:text-white leading-tight">
+                  <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white leading-tight">
                     {article.bookInfo.title}
                   </h3>
-                  <p className="text-lg text-slate-500 dark:text-slate-400 font-serif italic mb-3">por {article.bookInfo.author}</p>
+                  <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-serif italic mb-2">por {article.bookInfo.author}</p>
                   <div className="flex items-center justify-center md:justify-start gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`material-symbols-outlined text-[18px] ${i < (article.bookInfo?.rating || 0) / 2 ? 'text-primary filled-icon' : 'text-slate-200 dark:text-slate-800'}`}>
+                      <span key={i} className={`material-symbols-outlined text-[14px] md:text-[16px] ${i < (article.bookInfo?.rating || 0) / 2 ? 'text-primary filled-icon' : 'text-slate-200 dark:text-white/5'}`}>
                         star
                       </span>
                     ))}
@@ -178,15 +183,17 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
           )}
 
           {article.category === 'Escrita' && article.writingInfo && (
-            <div className="mb-8 flex border-y border-gray-100 dark:border-white/5 py-3">
-              <div className="flex-1 flex items-center justify-center gap-6">
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  GÊNERO: <span className="text-slate-900 dark:text-white ml-2">{article.writingInfo.genre}</span>
+            <div className="mb-8 flex items-center justify-center md:justify-start border-y border-gray-100 dark:border-white/5 py-3 md:py-4">
+              <div className="flex items-center gap-4 md:gap-8">
+                <div className="flex items-center gap-2">
+                  <span className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">GÊNERO:</span>
+                  <span className="text-[9px] md:text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest leading-none">{article.writingInfo.genre}</span>
                 </div>
                 <div className="size-1 bg-gray-200 dark:bg-white/10 rounded-full" />
                 {article.writingInfo.targetAudience && (
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    PÚBLICO: <span className="text-slate-900 dark:text-white ml-2">{article.writingInfo.targetAudience}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">PÚBLICO:</span>
+                    <span className="text-[9px] md:text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest leading-none">{article.writingInfo.targetAudience}</span>
                   </div>
                 )}
               </div>

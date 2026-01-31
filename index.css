@@ -83,8 +83,16 @@ button:focus {
 
 /* Custom Prose for Literary Content */
 .prose-custom p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   line-height: 1.8;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 768px) {
+  .prose-custom p {
+    margin-bottom: 1.5rem;
+    font-size: 18px;
+  }
 }
 
 .prose-custom blockquote p {
@@ -174,14 +182,14 @@ button:focus {
 }
 
 [contenteditable] pre {
-  background: #f8f9fa;
+  background: #fdfdfd;
   padding: 1.5rem;
   border-radius: 12px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9em;
+  font-size: 0.85em;
   overflow-x: auto;
-  margin: 1.5rem 0;
-  border: 1px solid #eee;
+  margin: 2rem 0;
+  border: 1px solid #f0f0f0;
 }
 
 .dark [contenteditable] pre {
