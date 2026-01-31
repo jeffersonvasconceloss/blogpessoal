@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { geminiService } from '../services/geminiService';
 import { postService } from '../services/postService';
 import { Article, Category } from '../types';
+import { ME } from '../constants';
 
 interface EditorProps {
   article?: Article | null;
@@ -24,6 +25,7 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
   const [showAI, setShowAI] = useState(false);
   const [inspirations, setInspirations] = useState<string[]>([]);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Book Specific State
   const [bookTitle, setBookTitle] = useState(article?.bookInfo?.title || '');
@@ -114,6 +116,7 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
     const slug = (finalTitle || 'rascunho').toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
     try {
+      setSaveError(null);
       const savedPost = await postService.savePost({
         id: postId || undefined,
         title: finalTitle || 'Sem título',
@@ -122,15 +125,9 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
         category,
         imageUrl: imageUrl || 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
         slug: slug || `rascunho-${Date.now()}`,
-        readTime: `${Math.max(1, Math.ceil(content.split(/\s+/).length / 200))} min`,
+        readTime: `${Math.max(1, Math.ceil(content.replace(/<[^>]*>/g, '').split(/\s+/).length / 200))} min`,
         published: isFinal,
-        author: article?.author || {
-          name: 'Jefferson Vasconcelos',
-          role: 'Escritor e Filósofo',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jefferson',
-          email: 'contato@jefferson.com',
-          bio: 'Explorando a intersecção entre pensamento clássico e modernidade tecnológica.'
-        },
+        author: article?.author || ME,
         bookInfo: category === 'Biblioteca' ? {
           title: bookTitle,
           author: bookAuthor,
@@ -164,8 +161,9 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
         setIsSaving(false);
         onPublish();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao salvar:", error);
+      setSaveError(error.message || "Erro de conexão com o servidor");
       setIsSaving(false);
       setIsAutosaving(false);
     }
@@ -283,6 +281,15 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
         </div>
 
         <div className="flex items-center gap-4">
+          {saveError && (
+            <span
+              title={saveError}
+              className="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-[9px] font-black uppercase tracking-widest animate-pulse border border-red-500/20"
+            >
+              <span className="material-symbols-outlined text-[14px]">error</span>
+              Erro ao salvar
+            </span>
+          )}
           <span className="text-[11px] font-medium text-gray-400 dark:text-slate-500 italic transition-all">
             {isAutosaving ? (
               <span className="flex items-center gap-2">
