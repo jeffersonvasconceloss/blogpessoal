@@ -19,19 +19,12 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, isAuthen
             />
 
 
-            {isAuthenticated ? (
+            {isAuthenticated && (
                 <NavItem
                     icon="dashboard"
                     label="Painel"
                     active={currentView === AppView.DASHBOARD}
                     onClick={() => onNavigate(AppView.DASHBOARD)}
-                />
-            ) : (
-                <NavItem
-                    icon="lock"
-                    label="Admin"
-                    active={currentView === AppView.LOGIN}
-                    onClick={() => onNavigate(AppView.LOGIN)}
                 />
             )}
 

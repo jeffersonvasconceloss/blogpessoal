@@ -47,30 +47,23 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, me, isAuthen
             onClick={() => onNavigate(AppView.ABOUT)}
           />
 
-          <div className="my-4 border-t border-gray-100 dark:border-white/5 pt-4">
-            <p className="px-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Administração</p>
-            {isAuthenticated ? (
+          {isAuthenticated && (
+            <div className="my-4 border-t border-gray-100 dark:border-white/5 pt-4">
+              <p className="px-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Administração</p>
               <NavItem
                 icon="dashboard"
                 label="Dashboard"
                 active={currentView === AppView.DASHBOARD}
                 onClick={() => onNavigate(AppView.DASHBOARD)}
               />
-            ) : (
               <NavItem
-                icon="lock"
-                label="Restrito"
-                active={currentView === AppView.LOGIN}
-                onClick={() => onNavigate(AppView.LOGIN)}
+                icon="draw"
+                label="Escrever"
+                active={currentView === AppView.EDITOR}
+                onClick={() => onNavigate(AppView.EDITOR)}
               />
-            )}
-            <NavItem
-              icon="draw"
-              label="Escrever"
-              active={currentView === AppView.EDITOR}
-              onClick={() => onNavigate(AppView.EDITOR)}
-            />
-          </div>
+            </div>
+          )}
         </nav>
       </div>
 
@@ -81,12 +74,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, me, isAuthen
         </div>
 
         <div className="pt-6 border-t border-gray-200 dark:border-white/5">
-          <button
-            className="w-full py-3 bg-primary text-white text-sm font-bold rounded-lg hover:brightness-110 transition-all shadow-lg shadow-primary/20"
-            onClick={() => onNavigate(AppView.EDITOR)}
-          >
-            Nova Entrada
-          </button>
+          {isAuthenticated && (
+            <button
+              className="w-full py-3 bg-primary text-white text-sm font-bold rounded-lg hover:brightness-110 transition-all shadow-lg shadow-primary/20 mb-4"
+              onClick={() => onNavigate(AppView.EDITOR)}
+            >
+              Nova Entrada
+            </button>
+          )}
           <p className="text-[10px] text-gray-400 text-center uppercase tracking-tighter mt-4">© 2024 {me.name}</p>
         </div>
       </div>

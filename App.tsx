@@ -47,7 +47,14 @@ const App: React.FC = () => {
     // Check if view is restricted
     if ((view === AppView.DASHBOARD || view === AppView.EDITOR) && !isAuthenticated) {
       setCurrentView(AppView.LOGIN);
+      window.history.pushState({}, '', '/login');
       return;
+    }
+
+    if (view === AppView.LOGIN) {
+      window.history.pushState({}, '', '/login');
+    } else if (view === AppView.HOME || view === AppView.FEED) {
+      window.history.pushState({}, '', '/');
     }
 
     setCurrentView(view);
@@ -59,12 +66,30 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === '/login') {
+      setCurrentView(AppView.LOGIN);
+    }
 
+    const handlePopState = () => {
+      const currentPath = window.location.pathname;
+      if (currentPath === '/login') {
+        setCurrentView(AppView.LOGIN);
+      } else if (currentPath === '/') {
+        setCurrentView(AppView.HOME);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleLogin = (password: string) => {
     if (password === 'jefferson123') {
       setIsAuthenticated(true);
       setCurrentView(AppView.DASHBOARD);
+      window.history.pushState({}, '', '/');
       return true;
     }
     return false;
@@ -109,6 +134,7 @@ const App: React.FC = () => {
           onLogout={() => {
             setIsAuthenticated(false);
             navigateTo(AppView.FEED);
+            window.history.pushState({}, '', '/');
           }}
         /></div>;
       case AppView.LOGIN:
