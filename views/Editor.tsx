@@ -176,6 +176,25 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
     }
   };
 
+  const insertHTML = (html: string) => {
+    document.execCommand('insertHTML', false, html);
+    if (contentEditableRef.current) {
+      contentValueRef.current = contentEditableRef.current.innerHTML;
+      contentEditableRef.current.focus();
+    }
+  };
+
+  const insertButton = (type: 'primary' | 'outline') => {
+    const text = prompt('Texto do Botão:', 'Clique Aqui');
+    const url = prompt('URL do Botão:', 'https://');
+    if (text && url) {
+      const style = type === 'primary'
+        ? 'background: #f45d2f; color: white; padding: 12px 24px; border-radius: 12px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px 0;'
+        : 'background: transparent; color: #f45d2f; border: 2px solid #f45d2f; padding: 10px 22px; border-radius: 12px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px 0;';
+      insertHTML(`<a href="${url}" target="_blank" style="${style}">${text}</a>&nbsp;`);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1 h-screen overflow-hidden bg-white dark:bg-background-dark">
       {/* Top Bar: Actions */}
@@ -210,8 +229,8 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
       {/* Main Formatting Toolbar */}
       <div className="flex items-center justify-center border-b border-gray-100 dark:border-white/5 py-1.5 px-4 bg-white dark:bg-background-dark overflow-x-auto no-scrollbar shadow-sm">
         <div className="flex items-center gap-1">
-          <ToolbarBtn icon="undo" onClick={() => { }} />
-          <ToolbarBtn icon="redo" onClick={() => { }} />
+          <ToolbarBtn icon="undo" onClick={() => applyFormatting('undo')} />
+          <ToolbarBtn icon="redo" onClick={() => applyFormatting('redo')} />
           <Divider />
           <ToolbarDropdown label="Estilo" items={[
             { label: 'Título Grande', action: () => applyHeading('h1') },
@@ -256,14 +275,30 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
             const url = prompt('URL da Imagem:');
             if (url) applyFormatting('insertImage', url);
           }} />
-          <ToolbarBtn icon="headphones" onClick={() => { }} />
-          <ToolbarBtn icon="videocam" onClick={() => { }} />
+          <ToolbarBtn icon="headphones" onClick={() => {
+            const url = prompt('URL do Áudio (MP3):');
+            if (url) insertHTML(`<audio src="${url}" controls style="width: 100%; margin: 10px 0; border-radius: 12px;"></audio><br/>`);
+          }} />
+          <ToolbarBtn icon="videocam" onClick={() => {
+            const url = prompt('URL do Vídeo (Youtube ou MP4):');
+            if (url) {
+              if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+                insertHTML(`<div style="position: relative; padding-bottom: 56.25%; height: 0; margin: 20px 0; border-radius: 16px; overflow: hidden;"><iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe></div><br/>`);
+              } else {
+                insertHTML(`<video src="${url}" controls style="width: 100%; margin: 10px 0; border-radius: 16px;"></video><br/>`);
+              }
+            }
+          }} />
           <ToolbarBtn icon="format_quote" onClick={() => applyHeading('blockquote')} />
           <Divider />
           <ToolbarBtn icon="format_list_bulleted" onClick={() => applyFormatting('insertUnorderedList')} />
           <ToolbarBtn icon="format_list_numbered" onClick={() => applyFormatting('insertOrderedList')} />
           <Divider />
-          <ToolbarDropdown label="Botão" items={[]} />
+          <ToolbarDropdown label="Botão" items={[
+            { label: 'Botão Principal', action: () => insertButton('primary') },
+            { label: 'Botão Minimalista', action: () => insertButton('outline') }
+          ]} />
           <Divider />
           <ToolbarDropdown label="Mais" items={[
             { label: 'Divisor', action: () => applyFormatting('insertHorizontalRule') },

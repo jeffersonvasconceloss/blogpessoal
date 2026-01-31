@@ -132,3 +132,61 @@ button:active {
   padding-left: 2rem;
   transition: all 0.3s ease;
 }
+
+[contenteditable] img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 1.5rem 0;
+  display: block;
+}
+
+[contenteditable] blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 1.5rem 2rem;
+  margin: 1.5rem 0;
+  background: rgba(244, 93, 47, 0.05);
+  font-style: italic;
+  font-size: 1.1em;
+  border-radius: 0 16px 16px 0;
+}
+
+[contenteditable] pre {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid #eee;
+}
+
+.dark [contenteditable] pre {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[contenteditable] ul,
+[contenteditable] ol {
+  padding-left: 2rem;
+  margin: 1rem 0;
+}
+
+[contenteditable] ul {
+  list-style-type: disc;
+}
+
+[contenteditable] ol {
+  list-style-type: decimal;
+}
+
+[contenteditable] hr {
+  border: none;
+  border-top: 2px dashed #eee;
+  margin: 3rem 0;
+}
+
+.dark [contenteditable] hr {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
