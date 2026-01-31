@@ -16,7 +16,11 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
   const [excerpt, setExcerpt] = useState(article?.excerpt || '');
   const [category, setCategory] = useState<Category>(article?.category || 'Pensamento');
   const [imageUrl, setImageUrl] = useState(article?.imageUrl || '');
+  const [postId, setPostId] = useState(article?.id || null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAutosaving, setIsAutosaving] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const [lastSavedContent, setLastSavedContent] = useState(article?.content || '');
   const [showAI, setShowAI] = useState(false);
   const [inspirations, setInspirations] = useState<string[]>([]);
   const [loadingAI, setLoadingAI] = useState(false);
@@ -90,58 +94,87 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
     document.execCommand('defaultParagraphSeparator', false, 'p');
   }, [article]);
 
-  const handlePublish = async () => {
-    setIsSaving(true);
+  const handleSave = async (isFinal: boolean = false) => {
+    if (isFinal) setIsSaving(true);
+    else setIsAutosaving(true);
+
     const content = contentValueRef.current;
 
     // Auto-fill title and excerpt for library posts if hidden
     const finalTitle = category === 'Biblioteca' ? `Notas de Leitura: ${bookTitle}` : title;
     const finalExcerpt = category === 'Biblioteca' ? `${bookAuthor} - ${bookStatus}` : (excerpt || (content.replace(/<[^>]*>/g, '').substring(0, 160) + '...'));
 
-    const slug = finalTitle.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    const slug = (finalTitle || 'rascunho').toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
-    await postService.savePost({
-      id: article?.id,
-      title: finalTitle,
-      content,
-      excerpt: finalExcerpt,
-      category,
-      imageUrl: imageUrl || 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      slug,
-      readTime: `${Math.max(1, Math.ceil(content.split(/\s+/).length / 200))} min`,
-      author: article?.author || {
-        name: 'Jefferson Vasconcelos',
-        role: 'Escritor e Filósofo',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jefferson',
-        email: 'contato@jefferson.com',
-        bio: 'Explorando a intersecção entre pensamento clássico e modernidade tecnológica.'
-      },
-      bookInfo: category === 'Biblioteca' ? {
-        title: bookTitle,
-        author: bookAuthor,
-        rating: bookRating,
-        status: bookStatus,
-        coverUrl: bookCover
-      } : undefined,
-      projectInfo: category === 'Projeto' ? {
-        status: projectStatus,
-        techStack: projectTech.split(',').map(s => s.trim()),
-        link: projectLink,
-        github: projectGithub
-      } : undefined,
-      thoughtInfo: category === 'Pensamento' ? {
-        coreInsight: thoughtInsight,
-        inspirationSource: thoughtSource
-      } : undefined,
-      writingInfo: category === 'Escrita' ? {
-        genre: writingGenre,
-        targetAudience: writingAudience
-      } : undefined
-    });
+    try {
+      const savedPost = await postService.savePost({
+        id: postId || undefined,
+        title: finalTitle || 'Sem título',
+        content,
+        excerpt: finalExcerpt,
+        category,
+        imageUrl: imageUrl || 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+        slug: slug || `rascunho-${Date.now()}`,
+        readTime: `${Math.max(1, Math.ceil(content.split(/\s+/).length / 200))} min`,
+        published: isFinal,
+        author: article?.author || {
+          name: 'Jefferson Vasconcelos',
+          role: 'Escritor e Filósofo',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jefferson',
+          email: 'contato@jefferson.com',
+          bio: 'Explorando a intersecção entre pensamento clássico e modernidade tecnológica.'
+        },
+        bookInfo: category === 'Biblioteca' ? {
+          title: bookTitle,
+          author: bookAuthor,
+          rating: bookRating,
+          status: bookStatus,
+          coverUrl: bookCover
+        } : undefined,
+        projectInfo: category === 'Projeto' ? {
+          status: projectStatus,
+          techStack: projectTech.split(',').map(s => s.trim()),
+          link: projectLink,
+          github: projectGithub
+        } : undefined,
+        thoughtInfo: category === 'Pensamento' ? {
+          coreInsight: thoughtInsight,
+          inspirationSource: thoughtSource
+        } : undefined,
+        writingInfo: category === 'Escrita' ? {
+          genre: writingGenre,
+          targetAudience: writingAudience
+        } : undefined
+      });
 
-    setIsSaving(false);
-    onPublish();
+      setPostId(savedPost.id);
+      setLastSavedContent(content);
+
+      if (!isFinal) {
+        setLastSavedAt(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+        setIsAutosaving(false);
+      } else {
+        setIsSaving(false);
+        onPublish();
+      }
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      setIsSaving(false);
+      setIsAutosaving(false);
+    }
   };
+
+  // Autosave Effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const currentContent = contentValueRef.current;
+      if (currentContent !== lastSavedContent && currentContent.length > 10) {
+        handleSave(false);
+      }
+    }, 10000); // Tenta salvar a cada 10 segundos se houver mudanças
+
+    return () => clearInterval(timer);
+  }, [lastSavedContent, title, bookTitle, category]);
 
   const getInspiration = async () => {
     setLoadingAI(true);
@@ -243,11 +276,22 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-[11px] font-medium text-gray-300 dark:text-slate-600 italic">Salvo automaticamente</span>
+          <span className="text-[11px] font-medium text-gray-400 dark:text-slate-500 italic transition-all">
+            {isAutosaving ? (
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Salvando...
+              </span>
+            ) : lastSavedAt ? (
+              `Salvo às ${lastSavedAt}`
+            ) : (
+              'Salvo automaticamente'
+            )}
+          </span>
           <button
-            onClick={handlePublish}
+            onClick={() => handleSave(true)}
             disabled={isSaving || (category !== 'Biblioteca' && !title)}
-            className="px-6 py-2 bg-[#1a1a1a] dark:bg-white text-white dark:text-black text-[11px] font-black rounded-full hover:opacity-90 transition-all active:scale-95 disabled:opacity-30 uppercase tracking-widest"
+            className="px-6 py-2 bg-[#1a1a1a] dark:bg-white text-white dark:text-black text-[11px] font-black rounded-full hover:opacity-90 transition-all active:scale-95 disabled:opacity-30 uppercase tracking-widest min-w-[120px]"
           >
             {isSaving ? 'Salvando...' : 'Publicar'}
           </button>

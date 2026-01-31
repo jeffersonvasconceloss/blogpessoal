@@ -80,9 +80,16 @@ const DashboardView: React.FC<DashboardProps> = ({ articles, onEdit, onDelete, o
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
-                                            {article.category}
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
+                                                {article.category}
+                                            </span>
+                                            {!article.published && (
+                                                <span className="px-3 py-1 bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-gray-200 dark:border-white/5">
+                                                    Rascunho
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 text-xs text-slate-500 font-serif">
                                         {article.date}

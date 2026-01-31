@@ -17,7 +17,9 @@ app.use(express.json());
 // API Routes
 app.get('/api/posts', async (req, res) => {
     try {
+        const { all } = req.query;
         const posts = await prisma.post.findMany({
+            where: all === 'true' ? {} : { published: true },
             orderBy: { date: 'desc' }
         });
         res.json(posts);
@@ -45,28 +47,29 @@ app.post('/api/posts', async (req, res) => {
     try {
         const {
             title, slug, excerpt, content, category, date, readTime, imageUrl,
-            author, bookInfo, projectInfo, thoughtInfo, writingInfo
+            author, bookInfo, projectInfo, thoughtInfo, writingInfo, published
         } = req.body;
 
         const post = await prisma.post.create({
             data: {
-                title,
-                slug: slug || `${title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
-                excerpt,
-                content,
+                title: title || 'Sem título',
+                slug: slug || `${(title || 'rascunho').toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+                excerpt: excerpt || '',
+                content: content || '',
                 category,
                 date: date ? new Date(date) : new Date(),
-                readTime,
-                imageUrl,
-                authorName: author.name,
-                authorRole: author.role,
-                authorAvatar: author.avatar,
-                authorEmail: author.email,
-                authorBio: author.bio,
+                readTime: readTime || '1 min',
+                imageUrl: imageUrl || '',
+                authorName: author?.name || 'Jefferson Vasconcelos',
+                authorRole: author?.role || '',
+                authorAvatar: author?.avatar || '',
+                authorEmail: author?.email || '',
+                authorBio: author?.bio || '',
                 bookInfo: bookInfo || undefined,
                 projectInfo: projectInfo || undefined,
                 thoughtInfo: thoughtInfo || undefined,
                 writingInfo: writingInfo || undefined,
+                published: published ?? false,
             }
         });
         res.json(post);
@@ -80,7 +83,7 @@ app.put('/api/posts/:id', async (req, res) => {
     try {
         const {
             title, excerpt, content, category, readTime, imageUrl,
-            author, bookInfo, projectInfo, thoughtInfo, writingInfo
+            author, bookInfo, projectInfo, thoughtInfo, writingInfo, published
         } = req.body;
 
         const post = await prisma.post.update({
@@ -101,6 +104,7 @@ app.put('/api/posts/:id', async (req, res) => {
                 projectInfo: projectInfo || undefined,
                 thoughtInfo: thoughtInfo || undefined,
                 writingInfo: writingInfo || undefined,
+                published: published !== undefined ? published : undefined,
             }
         });
         res.json(post);

@@ -4,8 +4,9 @@ import { Article } from '../types';
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
 
 export class PostService {
-    async getPosts(): Promise<Article[]> {
-        const response = await fetch(`${API_URL}/posts`);
+    async getPosts(all: boolean = false): Promise<Article[]> {
+        const url = all ? `${API_URL}/posts?all=true` : `${API_URL}/posts`;
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch posts');
         const data = await response.json();
         return data.map(this.mapToArticle);
@@ -21,6 +22,8 @@ export class PostService {
     async savePost(post: Partial<Article>): Promise<Article> {
         const method = post.id ? 'PUT' : 'POST';
         const url = post.id ? `${API_URL}/posts/${post.id}` : `${API_URL}/posts`;
+
+        console.log(`Saving post: ${method} to ${url}`, post);
 
         const response = await fetch(url, {
             method,

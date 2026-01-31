@@ -21,26 +21,18 @@ const App: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const data = await postService.getPosts();
-        setArticles(data);
-      } catch (error) {
-        console.error('Failed to load posts:', error);
-      }
-    };
-    loadPosts();
-  }, []);
-
-  const refreshArticles = async () => {
+  const refreshArticles = async (isAuth = isAuthenticated) => {
     try {
-      const data = await postService.getPosts();
+      const data = await postService.getPosts(isAuth);
       setArticles(data);
     } catch (error) {
       console.error('Failed to refresh posts:', error);
     }
   };
+
+  useEffect(() => {
+    refreshArticles();
+  }, [isAuthenticated]);
 
   // Navigation handler
   const navigateTo = (view: AppView, article?: Article) => {

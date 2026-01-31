@@ -33,6 +33,7 @@ export interface Article {
   author: Author;
   likes: number;
   commentsCount: number;
+  published: boolean;
   // Book specific fields
   bookInfo?: {
     title: string;
