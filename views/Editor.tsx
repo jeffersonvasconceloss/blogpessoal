@@ -100,9 +100,16 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
 
     const content = contentValueRef.current;
 
-    // Auto-fill title and excerpt for library posts if hidden
-    const finalTitle = category === 'Biblioteca' ? `Notas de Leitura: ${bookTitle}` : title;
-    const finalExcerpt = category === 'Biblioteca' ? `${bookAuthor} - ${bookStatus}` : (excerpt || (content.replace(/<[^>]*>/g, '').substring(0, 160) + '...'));
+    // Auto-fill title and excerpt for special categories
+    const finalTitle =
+      category === 'Biblioteca' ? (bookTitle ? `Notas de Leitura: ${bookTitle}` : 'Notas de Leitura') :
+        category === 'Pensamento' ? (thoughtInsight ? `Reflexão: ${thoughtInsight.substring(0, 50)}${thoughtInsight.length > 50 ? '...' : ''}` : 'Nova Reflexão') :
+          title;
+
+    const finalExcerpt =
+      category === 'Biblioteca' ? `${bookAuthor || 'Autor desconhecido'} - ${bookStatus}` :
+        category === 'Pensamento' ? thoughtInsight :
+          (excerpt || (content.replace(/<[^>]*>/g, '').substring(0, 160) + '...'));
 
     const slug = (finalTitle || 'rascunho').toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -353,16 +360,17 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
 
           {/* Dynamic Component: Biblioteca (Compact Notion Style) */}
           {category === 'Biblioteca' && (
-            <div className="mb-12 flex gap-8 items-start border-b border-gray-100 dark:border-white/5 pb-12 group">
+            <div className="mb-14 p-8 bg-gray-50/50 dark:bg-white/[0.02] rounded-[32px] border border-gray-100 dark:border-white/5 flex gap-10 items-start group animate-slide-up">
               <div
                 onClick={() => document.getElementById('cover-upload')?.click()}
-                className="relative w-[120px] aspect-[3/4] rounded-lg shadow-xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+                className="relative w-[140px] aspect-[2/3] rounded-2xl shadow-2xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 group-hover:scale-[1.02] transition-transform duration-500"
               >
                 {bookCover ? (
                   <img src={bookCover} alt="Capa" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                    <span className="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 dark:text-slate-700">
+                    <span className="material-symbols-outlined text-4xl mb-2">add_photo_alternate</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Capa</span>
                   </div>
                 )}
                 <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {
@@ -374,41 +382,47 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
                   }
                 }} />
               </div>
-              <div className="flex-1 space-y-4 pt-1">
-                <input
-                  type="text"
-                  placeholder="Título do Livro"
-                  value={bookTitle}
-                  onChange={(e) => setBookTitle(e.target.value)}
-                  className="w-full bg-transparent border-none focus:ring-0 p-0 text-2xl font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder:text-gray-200"
-                />
-                <input
-                  type="text"
-                  placeholder="Autor do Livro"
-                  value={bookAuthor}
-                  onChange={(e) => setBookAuthor(e.target.value)}
-                  className="w-full bg-transparent border-none focus:ring-0 p-0 text-[15px] font-medium text-gray-400 placeholder:text-gray-200"
-                />
-                <div className="flex items-center gap-6 pt-2">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
+              <div className="flex-1 space-y-6 pt-2">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Título da Obra</span>
+                  <input
+                    type="text"
+                    placeholder="Ex: O Alquimista"
+                    value={bookTitle}
+                    onChange={(e) => setBookTitle(e.target.value)}
+                    className="w-full bg-transparent border-none focus:ring-0 p-0 text-3xl font-newsreader font-bold text-slate-900 dark:text-white placeholder:text-gray-200 dark:placeholder:text-white/5"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Autor</span>
+                  <input
+                    type="text"
+                    placeholder="Ex: Paulo Coelho"
+                    value={bookAuthor}
+                    onChange={(e) => setBookAuthor(e.target.value)}
+                    className="w-full bg-transparent border-none focus:ring-0 p-0 text-lg font-newsreader italic text-slate-500 placeholder:text-gray-200 dark:placeholder:text-white/5"
+                  />
+                </div>
+                <div className="flex items-center gap-10 pt-2">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Leitura</span>
                     <select
                       value={bookStatus}
                       onChange={(e) => setBookStatus(e.target.value as any)}
-                      className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary cursor-pointer outline-none"
+                      className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2 text-[12px] font-bold text-primary cursor-pointer outline-none focus:border-primary/40 appearance-none min-w-[120px]"
                     >
                       <option value="Lendo">Lendo</option>
                       <option value="Lido">Lido</option>
                       <option value="Quero Ler">Quero Ler</option>
                     </select>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Nota</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Avaliação (0-10)</span>
                     <input
-                      type="number" step="0.1" min="0" max="10"
+                      type="number" step="0.5" min="0" max="10"
                       value={bookRating}
                       onChange={(e) => setBookRating(Number(e.target.value))}
-                      className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary w-12 outline-none"
+                      className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2 text-[12px] font-bold text-primary w-20 outline-none focus:border-primary/40"
                     />
                   </div>
                 </div>
@@ -418,79 +432,116 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
 
           {/* Dynamic Component: Projeto */}
           {category === 'Projeto' && (
-            <div className="mb-12 grid grid-cols-2 gap-x-12 gap-y-6 text-[13px] border-b border-gray-100 dark:border-white/5 pb-10">
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
-                <select value={projectStatus} onChange={(e) => setProjectStatus(e.target.value as any)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white">
-                  <option value="Em Desenvolvimento">Em Desenvolvimento</option>
-                  <option value="Concluído">Concluído</option>
-                  <option value="Pausado">Pausado</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Tecnologias</span>
-                <input type="text" placeholder="React, AWS..." value={projectTech} onChange={(e) => setProjectTech(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white placeholder:text-gray-200" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Link</span>
-                <input type="text" placeholder="https://..." value={projectLink} onChange={(e) => setProjectLink(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Github</span>
-                <input type="text" placeholder="https://github..." value={projectGithub} onChange={(e) => setProjectGithub(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
+            <div className="mb-14 p-8 bg-gray-50/50 dark:bg-white/[0.02] rounded-[32px] border border-gray-100 dark:border-white/5 animate-slide-up">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Status do Projeto</span>
+                  <select
+                    value={projectStatus}
+                    onChange={(e) => setProjectStatus(e.target.value as any)}
+                    className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] font-bold dark:text-white outline-none focus:border-primary/40 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+                    <option value="Concluído">Concluído</option>
+                    <option value="Pausado">Pausado</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tecnologias</span>
+                  <input
+                    type="text"
+                    placeholder="Ex: React, AWS, Tailwind..."
+                    value={projectTech}
+                    onChange={(e) => setProjectTech(e.target.value)}
+                    className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] font-bold dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/10 outline-none focus:border-primary/40 transition-all"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Live Link</span>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[18px] text-blue-500/50">link</span>
+                    <input
+                      type="text"
+                      placeholder="https://meuprojeto.com"
+                      value={projectLink}
+                      onChange={(e) => setProjectLink(e.target.value)}
+                      className="w-full bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl pl-11 pr-4 py-3 text-[13px] font-bold text-blue-500 placeholder:text-gray-300 dark:placeholder:text-white/10 outline-none focus:border-primary/40 transition-all"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Repositório Github</span>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[18px] text-slate-400">code</span>
+                    <input
+                      type="text"
+                      placeholder="https://github.com/..."
+                      value={projectGithub}
+                      onChange={(e) => setProjectGithub(e.target.value)}
+                      className="w-full bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl pl-11 pr-4 py-3 text-[13px] font-bold dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/10 outline-none focus:border-primary/40 transition-all"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* Dynamic Component: Pensamento */}
           {category === 'Pensamento' && (
-            <div className="mb-12">
-              <textarea
-                placeholder="Qual o insight principal?"
-                value={thoughtInsight}
-                onChange={(e) => setThoughtInsight(e.target.value)}
-                className="w-full bg-transparent border-none focus:ring-0 p-0 text-3xl font-serif italic text-primary placeholder:text-gray-100 resize-none leading-relaxed"
-                rows={2}
-              />
-              <input
-                type="text"
-                placeholder="Fonte de inspiração..."
-                value={thoughtSource}
-                onChange={(e) => setThoughtSource(e.target.value)}
-                className="w-full bg-transparent border-none focus:ring-0 p-0 mt-4 text-[12px] font-bold uppercase tracking-[0.2em] text-gray-300 placeholder:text-gray-100"
-              />
-              <div className="mt-8 border-b border-gray-100 dark:border-white/5 opacity-50"></div>
+            <div className="mb-14 p-10 bg-[#1a0f0f]/30 dark:bg-white/[0.02] rounded-[32px] border border-gray-100 dark:border-white/5 animate-slide-up relative overflow-hidden group">
+              <span className="material-symbols-outlined absolute -top-4 -left-2 text-[100px] text-primary/5 rotate-12 select-none group-hover:scale-110 transition-transform duration-700">format_quote</span>
+
+              <div className="relative z-10 space-y-8">
+                <textarea
+                  placeholder="Qual o insight principal?"
+                  value={thoughtInsight}
+                  onChange={(e) => setThoughtInsight(e.target.value)}
+                  className="w-full bg-transparent border-none focus:ring-0 p-0 text-2xl md:text-3xl font-newsreader italic text-slate-800 dark:text-white/90 placeholder:text-gray-200 dark:placeholder:text-white/10 resize-none leading-relaxed text-center"
+                  rows={2}
+                />
+
+                <div className="flex flex-col items-center gap-4">
+                  <div className="h-[1px] w-12 bg-primary/20"></div>
+                  <input
+                    type="text"
+                    placeholder="Fonte de inspiração..."
+                    value={thoughtSource}
+                    onChange={(e) => setThoughtSource(e.target.value)}
+                    className="bg-transparent border-none focus:ring-0 p-0 text-[10px] font-black uppercase tracking-[0.25em] text-primary/60 placeholder:text-primary/20 text-center w-full"
+                  />
+                </div>
+              </div>
             </div>
           )}
 
           {/* Dynamic Component: Escrita */}
           {category === 'Escrita' && (
-            <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo</label>
+            <div className="mb-14 p-8 bg-gray-50/50 dark:bg-white/[0.02] rounded-[32px] border border-gray-100 dark:border-white/5 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo Literário</span>
                 <input
                   type="text"
                   placeholder="Ex: Ensaio, Conto, Ensaio Técnico"
                   value={writingGenre}
                   onChange={(e) => setWritingGenre(e.target.value)}
-                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
+                  className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] font-bold dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/10 outline-none focus:border-primary/40 transition-all"
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Público-Alvo</label>
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Público-Alvo</span>
                 <input
                   type="text"
                   placeholder="Ex: Estudantes, Desenvolvedores, Geral"
                   value={writingAudience}
                   onChange={(e) => setWritingAudience(e.target.value)}
-                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
+                  className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] font-bold dark:text-white placeholder:text-gray-300 dark:placeholder:text-white/10 outline-none focus:border-primary/40 transition-all"
                 />
               </div>
             </div>
           )}
 
           <div className="flex flex-col gap-2">
-            {category !== 'Biblioteca' && (
+            {category !== 'Biblioteca' && category !== 'Pensamento' && (
               <>
                 <textarea
                   ref={titleRef}
@@ -519,13 +570,13 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
                 suppressContentEditableWarning
                 spellCheck="true"
                 lang="pt-BR"
-                data-placeholder="Escreva sua reflexão aqui..."
+                data-placeholder={category === 'Pensamento' ? "Desenvolva sua reflexão aqui..." : "Escreva seu ensaio aqui..."}
                 onInput={(e) => {
                   contentValueRef.current = e.currentTarget.innerHTML;
                 }}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-gray-100 dark:placeholder:text-white/5 min-h-[60vh] pb-64 no-scrollbar leading-[1.8] outline-none"
+                className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-gray-100 dark:placeholder:text-white/5 min-h-[50vh] pb-64 no-scrollbar leading-[1.8] outline-none"
                 style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
               ></div>
             </div>
