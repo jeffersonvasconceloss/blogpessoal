@@ -125,6 +125,57 @@ app.delete('/api/posts/:id', async (req, res) => {
     }
 });
 
+// Like/Engagement Routes
+app.post('/api/posts/:id/like', async (req, res) => {
+    try {
+        const post = await prisma.post.update({
+            where: { id: req.params.id },
+            data: { likes: { increment: 1 } }
+        });
+        res.json({ likes: post.likes });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to like post' });
+    }
+});
+
+app.get('/api/posts/:id/comments', async (req, res) => {
+    try {
+        const comments = await prisma.comment.findMany({
+            where: { postId: req.params.id, parentId: null },
+            include: { replies: true },
+            orderBy: { date: 'desc' }
+        });
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch comments' });
+    }
+});
+
+app.post('/api/posts/:id/comments', async (req, res) => {
+    try {
+        const { authorName, authorAvatar, text, parentId } = req.body;
+        const comment = await prisma.comment.create({
+            data: {
+                postId: req.params.id,
+                authorName: authorName || 'Leitor Anônimo',
+                authorAvatar: authorAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
+                text,
+                parentId: parentId || undefined
+            }
+        });
+
+        // Increment globally
+        await prisma.post.update({
+            where: { id: req.params.id },
+            data: { commentsCount: { increment: 1 } }
+        });
+
+        res.json(comment);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add comment' });
+    }
+});
+
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '..', 'dist');

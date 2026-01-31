@@ -43,6 +43,31 @@ export class PostService {
         if (!response.ok) throw new Error('Failed to delete post');
     }
 
+    async likePost(id: string): Promise<number> {
+        const response = await fetch(`${API_URL}/posts/${id}/like`, {
+            method: 'POST'
+        });
+        if (!response.ok) throw new Error('Failed to like post');
+        const data = await response.json();
+        return data.likes;
+    }
+
+    async getComments(postId: string): Promise<any[]> {
+        const response = await fetch(`${API_URL}/posts/${postId}/comments`);
+        if (!response.ok) throw new Error('Failed to fetch comments');
+        return await response.json();
+    }
+
+    async addComment(postId: string, comment: { authorName: string; text: string; parentId?: string }): Promise<any> {
+        const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(comment)
+        });
+        if (!response.ok) throw new Error('Failed to add comment');
+        return await response.json();
+    }
+
     private mapToArticle(data: any): Article {
         return {
             ...data,
