@@ -71,57 +71,44 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
 
   return (
     <section className="min-h-screen bg-white dark:bg-background-dark flex flex-col items-center relative overflow-x-hidden">
-      {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 w-full h-16 z-[100] px-6 flex items-center justify-between pointer-events-none">
+      {/* Minimal Top Header - Discreete Back & Profile */}
+      <nav className="fixed top-0 left-0 w-full h-20 z-[100] px-6 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-4 pointer-events-auto">
           <button
             onClick={onBack}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/50 dark:bg-white/5 backdrop-blur-md border border-gray-100 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group"
+            className="group flex items-center gap-2 px-4 py-2 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
           >
-            <span className="material-symbols-outlined text-[22px] text-slate-600 dark:text-slate-400">arrow_back</span>
+            <span className="material-symbols-outlined text-[20px] text-slate-400">arrow_back</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Voltar</span>
           </button>
         </div>
+        <div className="flex-1 flex justify-center pointer-events-auto">
+          <div className="size-10 rounded-xl bg-cover bg-center border border-gray-100 dark:border-white/10 shadow-sm" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
+        </div>
+        <div className="w-[100px]" /> {/* Spacer for symmetry */}
       </nav>
 
-      <article className="max-w-[700px] w-full pt-20 pb-40 px-6 animate-fade-in flex flex-col">
-        {/* Header Section */}
-        {article.category !== 'Pensamento' ? (
-          <header className="mb-14 border-b border-gray-100 dark:border-white/5 pb-10 text-center md:text-left">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-md">
-                  {article.category}
-                </span>
-                <div className="h-[1px] flex-1 bg-gray-100 dark:bg-white/5"></div>
-              </div>
+      <article className="max-w-[760px] w-full pt-32 pb-40 px-6 animate-fade-in flex flex-col">
+        {/* Unified High-Hierarchy Header */}
+        <header className="mb-20">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">
+              {article.category}
+            </span>
 
-              <h1 className="text-3xl md:text-5xl font-newsreader font-bold leading-tight text-slate-900 dark:text-white tracking-tight">
-                {article.title}
-              </h1>
+            <h1 className="text-4xl md:text-6xl font-display font-black leading-[1.1] text-slate-900 dark:text-white tracking-tight mb-8 text-center md:text-left">
+              {article.title}
+            </h1>
 
-              <p className="text-lg text-slate-500 dark:text-slate-400 font-serif italic border-l-2 border-primary/20 pl-6 py-1 mx-auto md:mx-0 max-w-2xl text-left">
-                {article.excerpt}
-              </p>
-
-              <div className="flex items-center justify-center md:justify-start gap-4 pt-6">
-                <div className="size-12 rounded-full bg-cover bg-center ring-2 ring-primary/5" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
-                <div className="flex flex-col items-start">
-                  <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-widest">{article.author.name}</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{article.date} • {article.readTime}</span>
-                </div>
+            <div className="flex items-center gap-4 py-6 border-y border-gray-100 dark:border-white/5 w-full">
+              <div className="size-11 rounded-full bg-cover bg-center ring-1 ring-black/5" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
+              <div className="flex flex-col">
+                <span className="text-[12px] font-black text-slate-900 dark:text-white uppercase tracking-tight">{article.author.name}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{article.date}</span>
               </div>
             </div>
-          </header>
-        ) : (
-          <header className="mb-20 pt-10 text-center">
-            <div className="flex flex-col items-center gap-6">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/40">
-                {article.date}
-              </span>
-              <div className="h-12 w-[1.5px] bg-gradient-to-b from-primary/40 to-transparent"></div>
-            </div>
-          </header>
-        )}
+          </div>
+        </header>
 
         {/* Content Section */}
         <div className="prose-custom dark:prose-invert font-serif text-[19px] leading-[1.8] text-slate-800 dark:text-slate-200">
@@ -247,32 +234,34 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
           </div>
         </div>
 
-        {/* Real Interaction Bar */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-[500px] h-16 bg-white/90 dark:bg-[#1a1a1a]/95 backdrop-blur-2xl border border-gray-100 dark:border-white/10 rounded-full z-[100] px-6 flex items-center justify-between shadow-2xl">
-          <div className="flex items-center gap-8">
+        {/* Refined Minimalist Interaction Bar (Matching Reference) */}
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 w-[94%] max-w-[540px] h-16 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-2xl border border-gray-100 dark:border-white/5 rounded-full z-[100] px-8 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+          <div className="flex items-center gap-10">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-2 group transition-all ${isLiked ? 'text-primary' : 'text-slate-400 hover:text-primary'}`}
+              className={`flex items-center gap-2.5 transition-all ${isLiked ? 'text-primary' : 'text-slate-400 hover:text-primary'}`}
             >
-              <span className={`material-symbols-outlined text-[22px] ${isLiked ? 'filled-icon scale-110' : 'group-hover:scale-110'}`}>favorite</span>
-              <span className="text-[13px] font-black tracking-tighter">{likes}</span>
+              <span className={`material-symbols-outlined text-[24px] ${isLiked ? 'filled-icon scale-110' : 'hover:scale-110'}`}>favorite</span>
+              <span className="text-[14px] font-bold tracking-tight">{likes}</span>
             </button>
+
             <button
               onClick={() => setShowCommentBox(!showCommentBox)}
-              className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all group"
+              className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all"
             >
-              <span className="material-symbols-outlined text-[22px] group-hover:scale-110">chat_bubble</span>
-              <span className="text-[13px] font-black tracking-tighter">{comments.length}</span>
+              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">chat_bubble</span>
+              <span className="text-[14px] font-bold tracking-tight">{comments.length}</span>
+            </button>
+
+            <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all">
+              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">sync</span>
+              <span className="text-[14px] font-bold tracking-tight">26</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <span className="material-symbols-outlined text-[22px]">bookmark</span>
-            </button>
-            <div className="h-6 w-[1px] bg-gray-100 dark:bg-white/10 mx-1"></div>
-            <button className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <span className="material-symbols-outlined text-[22px]">share</span>
+          <div className="flex items-center gap-2">
+            <button className="p-2.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+              <span className="material-symbols-outlined text-[24px] hover:scale-110 transition-transform">ios_share</span>
             </button>
           </div>
         </div>
