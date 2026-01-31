@@ -9,25 +9,25 @@ interface MobileHeaderProps {
 
 const MobileHeader: React.FC<MobileHeaderProps> = ({ me, onBrandClick }) => {
     return (
-        <header className="lg:hidden sticky top-0 bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-lg border-b border-gray-200 dark:border-white/10 px-6 py-4 z-40 flex items-center justify-between">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={onBrandClick}>
+        <header className="lg:hidden sticky top-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 px-6 py-4 z-40 flex items-center justify-between pt-safe">
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={onBrandClick}>
                 <div
-                    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 ring-2 ring-primary/20"
+                    className="size-9 rounded-full ring-2 ring-primary/10 group-active:scale-90 transition-transform bg-center bg-no-repeat bg-cover shadow-sm"
                     style={{ backgroundImage: `url("${me.avatar}")` }}
                 />
                 <div className="flex flex-col">
-                    <h1 className="text-lg font-bold leading-none dark:text-white font-newsreader">{me.name.split(' ')[0]}</h1>
-                    <p className="text-primary text-[8px] font-bold uppercase tracking-widest leading-none mt-1">Jornal Literário</p>
+                    <h1 className="text-[17px] font-black leading-tight dark:text-white tracking-tight -mb-0.5">{me.name.split(' ')[0]}</h1>
+                    <p className="text-primary text-[9px] font-black uppercase tracking-[0.2em] leading-none opacity-80">Mindshelf</p>
                 </div>
             </div>
 
-            <div className="flex items-center gap-4">
-                <button className="text-slate-400">
-                    <span className="material-symbols-outlined text-[20px]">search</span>
+            <div className="flex items-center gap-2">
+                <button className="size-10 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-[22px]">search</span>
                 </button>
-                <button className="text-slate-400">
-                    <span className="material-symbols-outlined text-[20px]">notifications1</span>
-                </button>
+                <div className="size-8 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[18px] text-slate-400">notifications</span>
+                </div>
             </div>
         </header>
     );

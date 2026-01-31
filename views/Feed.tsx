@@ -11,10 +11,10 @@ interface FeedProps {
 
 const FeedView: React.FC<FeedProps> = ({ onArticleClick, articles }) => {
   return (
-    <section className="flex-1 max-w-[720px] mx-auto px-4 md:px-6 py-12 md:py-20">
-      <header className="mb-16 border-b border-gray-100 dark:border-white/5 pb-10">
-        <h2 className="text-3xl md:text-5xl font-display font-black dark:text-white tracking-tight mb-4">Fluxo de Pensamentos</h2>
-        <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl font-serif max-w-2xl leading-relaxed">
+    <section className="flex-1 max-w-[720px] mx-auto px-4 md:px-6 py-10 md:py-20">
+      <header className="mb-12 border-b border-gray-100 dark:border-white/5 pb-8">
+        <h2 className="text-2xl md:text-5xl font-display font-black dark:text-white tracking-tight mb-3">Fluxo de Pensamentos</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-base md:text-xl font-serif max-w-2xl leading-relaxed">
           Explorando a artesania do pensamento, estética e a arquitetura do silêncio.
         </p>
       </header>
@@ -58,41 +58,43 @@ const FeedView: React.FC<FeedProps> = ({ onArticleClick, articles }) => {
                 )}
 
                 {/* The Thought Box - Professional & Deep Focus */}
-                <div className="relative w-full bg-slate-50 dark:bg-white/[0.02] rounded-[32px] p-8 md:p-10 mb-6 border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-500 group-hover:border-primary/20">
-                  <span className="material-symbols-outlined absolute -top-4 -left-2 text-[100px] text-primary/[0.03] rotate-12 select-none pointer-events-none">format_quote</span>
+                <div className="relative w-full bg-slate-50 dark:bg-white/[0.02] rounded-[28px] md:rounded-[32px] p-6 md:p-10 mb-5 border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-500 group-hover:border-primary/20">
+                  <span className="material-symbols-outlined absolute -top-4 -left-2 text-[80px] md:text-[100px] text-primary/[0.03] rotate-12 select-none pointer-events-none">format_quote</span>
 
-                  <div className="relative z-10 space-y-6">
-                    <p className="text-[18px] md:text-[20px] font-serif text-slate-700 dark:text-slate-200 leading-[1.7] italic">
+                  <div className="relative z-10 space-y-5">
+                    <p className="text-[17px] md:text-[20px] font-serif text-slate-700 dark:text-slate-200 leading-[1.6] md:leading-[1.7] italic">
                       "{article.thoughtInfo?.coreInsight || article.excerpt}"
                     </p>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-200/50 dark:border-white/5">
-                      <span className="text-[10px] font-black text-primary/50 uppercase tracking-[0.3em]">
+                    <div className="flex items-center justify-between pt-5 border-t border-gray-200/50 dark:border-white/5">
+                      <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em]">
                         {article.author.name}
                       </span>
-                      <button className="text-slate-300 dark:text-white/20 hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">bookmark</span>
+                      <button className="size-8 flex items-center justify-center text-slate-300 dark:text-white/20 hover:text-primary transition-colors">
+                        <span className="material-symbols-outlined text-[18px]">bookmark</span>
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Footer Interactions */}
-                <div className="flex items-center gap-10 pl-2">
-                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">favorite</span>
-                    <span className="text-[12px] font-black tracking-tighter">{article.likes}</span>
-                  </button>
-                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">chat_bubble</span>
-                    <span className="text-[12px] font-black tracking-tighter">{article.commentsCount}</span>
-                  </button>
-                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon">
-                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">sync</span>
-                    <span className="text-[12px] font-black tracking-tighter">24</span>
-                  </button>
-                  <button className="flex items-center gap-2.5 text-slate-400 hover:text-primary transition-all group/icon ml-auto">
-                    <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">ios_share</span>
+                <div className="flex items-center justify-between px-2">
+                  <div className="flex items-center gap-6 md:gap-10">
+                    <button className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all group/icon">
+                      <span className="material-symbols-outlined text-[20px] md:text-[22px] group-hover:scale-110 transition-transform">favorite</span>
+                      <span className="text-[12px] font-black tracking-tighter">{article.likes}</span>
+                    </button>
+                    <button className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all group/icon">
+                      <span className="material-symbols-outlined text-[20px] md:text-[22px] group-hover:scale-110 transition-transform">chat_bubble</span>
+                      <span className="text-[12px] font-black tracking-tighter">{article.commentsCount}</span>
+                    </button>
+                    <button className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all group/icon">
+                      <span className="material-symbols-outlined text-[20px] md:text-[22px] group-hover:scale-110 transition-transform">sync</span>
+                      <span className="text-[12px] font-black tracking-tighter">24</span>
+                    </button>
+                  </div>
+                  <button className="size-10 flex items-center justify-center text-slate-400 hover:text-primary transition-all group/icon">
+                    <span className="material-symbols-outlined text-[20px] md:text-[22px] group-hover:scale-110 transition-transform">ios_share</span>
                   </button>
                 </div>
               </article>

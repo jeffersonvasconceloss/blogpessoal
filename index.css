@@ -8,6 +8,15 @@
 
 body {
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+button,
+a {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .filled-icon {
@@ -56,11 +65,20 @@ body {
 
 /* App-like interactions */
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
+  opacity: 0.8;
+}
+
+button:focus {
+  outline: none;
 }
 
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
 }
 
 /* Custom Prose for Literary Content */

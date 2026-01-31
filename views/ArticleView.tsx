@@ -72,20 +72,20 @@ const ArticleView: React.FC<ArticleViewProps> = ({ article, onBack }) => {
   return (
     <section className="min-h-screen bg-white dark:bg-background-dark flex flex-col items-center relative overflow-x-hidden">
       {/* Minimal Top Header - Discreete Back & Profile */}
-      <nav className="fixed top-0 left-0 w-full h-20 z-[100] px-6 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-4 pointer-events-auto">
+      <nav className="fixed top-0 left-0 w-full h-16 md:h-20 z-[100] px-4 md:px-6 flex items-center justify-between pointer-events-none pt-safe">
+        <div className="flex items-center gap-2 pointer-events-auto">
           <button
             onClick={onBack}
-            className="group flex items-center gap-2 px-4 py-2 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+            className="group flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/50 dark:bg-background-dark/50 backdrop-blur-md border border-gray-100 dark:border-white/5 shadow-sm active:scale-90 transition-all"
           >
-            <span className="material-symbols-outlined text-[20px] text-slate-400">arrow_back</span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Voltar</span>
+            <span className="material-symbols-outlined text-[18px] text-slate-500">arrow_back</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Voltar</span>
           </button>
         </div>
         <div className="flex-1 flex justify-center pointer-events-auto">
-          <div className="size-10 rounded-xl bg-cover bg-center border border-gray-100 dark:border-white/10 shadow-sm" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
+          <div className="size-9 md:size-10 rounded-xl bg-cover bg-center border border-gray-100 dark:border-white/10 shadow-sm" style={{ backgroundImage: `url("${article.author.avatar}")` }} />
         </div>
-        <div className="w-[100px]" /> {/* Spacer for symmetry */}
+        <div className="w-[80px] md:w-[100px]" /> {/* Spacer for symmetry */}
       </nav>
 
       <article className="max-w-[760px] w-full pt-20 pb-40 px-6 animate-fade-in flex flex-col">
