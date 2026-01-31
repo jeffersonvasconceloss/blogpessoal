@@ -43,6 +43,8 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
   const [writingAudience, setWritingAudience] = useState(article?.writingInfo?.targetAudience || '');
   const [fontSize, setFontSize] = useState(16);
   const [isFocused, setIsFocused] = useState(false);
+  const [activeModal, setActiveModal] = useState<'link' | 'image' | 'audio' | 'video' | 'button' | null>(null);
+  const [modalData, setModalData] = useState({ title: '', url: '', type: '' });
 
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const excerptRef = useRef<HTMLTextAreaElement>(null);
@@ -162,14 +164,19 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
 
   // Rich Text Formatting Logic
   const applyFormatting = (command: string, value: string = '') => {
+    if (contentEditableRef.current) {
+      contentEditableRef.current.focus();
+    }
     document.execCommand(command, false, value);
     if (contentEditableRef.current) {
       contentValueRef.current = contentEditableRef.current.innerHTML;
-      contentEditableRef.current.focus();
     }
   };
 
   const applyHeading = (level: string) => {
+    if (contentEditableRef.current) {
+      contentEditableRef.current.focus();
+    }
     document.execCommand('formatBlock', false, level);
     if (contentEditableRef.current) {
       contentValueRef.current = contentEditableRef.current.innerHTML;
@@ -184,15 +191,35 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
     }
   };
 
-  const insertButton = (type: 'primary' | 'outline') => {
-    const text = prompt('Texto do Botão:', 'Clique Aqui');
-    const url = prompt('URL do Botão:', 'https://');
+  const insertButton = (text: string, url: string, type: string) => {
     if (text && url) {
       const style = type === 'primary'
         ? 'background: #f45d2f; color: white; padding: 12px 24px; border-radius: 12px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px 0;'
         : 'background: transparent; color: #f45d2f; border: 2px solid #f45d2f; padding: 10px 22px; border-radius: 12px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px 0;';
-      insertHTML(`<a href="${url}" target="_blank" style="${style}">${text}</a>&nbsp;`);
+      insertHTML(`<a href="${url}" target="_blank" rel="noopener noreferrer" style="${style}">${text}</a>&nbsp;`);
     }
+  };
+
+  const handleModalConfirm = () => {
+    if (activeModal === 'link') {
+      applyFormatting('createLink', modalData.url);
+    } else if (activeModal === 'image') {
+      applyFormatting('insertImage', modalData.url);
+    } else if (activeModal === 'audio') {
+      insertHTML(`<audio src="${modalData.url}" controls style="width: 100%; margin: 10px 0; border-radius: 12px;"></audio><br/>`);
+    } else if (activeModal === 'video') {
+      const url = modalData.url;
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+        insertHTML(`<div style="position: relative; padding-bottom: 56.25%; height: 0; margin: 20px 0; border-radius: 16px; overflow: hidden;"><iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe></div><br/>`);
+      } else {
+        insertHTML(`<video src="${url}" controls style="width: 100%; margin: 10px 0; border-radius: 16px;"></video><br/>`);
+      }
+    } else if (activeModal === 'button') {
+      insertButton(modalData.title, modalData.url, modalData.type);
+    }
+    setActiveModal(null);
+    setModalData({ title: '', url: '', type: '' });
   };
 
   return (
@@ -267,37 +294,18 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           <ToolbarBtn icon="format_strikethrough" onClick={() => applyFormatting('strikeThrough')} />
           <ToolbarBtn icon="code" onClick={() => applyFormatting('formatBlock', '<pre>')} />
           <Divider />
-          <ToolbarBtn icon="link" onClick={() => {
-            const url = prompt('Inserir Link:');
-            if (url) applyFormatting('createLink', url);
-          }} />
-          <ToolbarBtn icon="image" onClick={() => {
-            const url = prompt('URL da Imagem:');
-            if (url) applyFormatting('insertImage', url);
-          }} />
-          <ToolbarBtn icon="headphones" onClick={() => {
-            const url = prompt('URL do Áudio (MP3):');
-            if (url) insertHTML(`<audio src="${url}" controls style="width: 100%; margin: 10px 0; border-radius: 12px;"></audio><br/>`);
-          }} />
-          <ToolbarBtn icon="videocam" onClick={() => {
-            const url = prompt('URL do Vídeo (Youtube ou MP4):');
-            if (url) {
-              if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                insertHTML(`<div style="position: relative; padding-bottom: 56.25%; height: 0; margin: 20px 0; border-radius: 16px; overflow: hidden;"><iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe></div><br/>`);
-              } else {
-                insertHTML(`<video src="${url}" controls style="width: 100%; margin: 10px 0; border-radius: 16px;"></video><br/>`);
-              }
-            }
-          }} />
+          <ToolbarBtn icon="link" onClick={() => setActiveModal('link')} />
+          <ToolbarBtn icon="image" onClick={() => setActiveModal('image')} />
+          <ToolbarBtn icon="headphones" onClick={() => setActiveModal('audio')} />
+          <ToolbarBtn icon="videocam" onClick={() => setActiveModal('video')} />
           <ToolbarBtn icon="format_quote" onClick={() => applyHeading('blockquote')} />
           <Divider />
           <ToolbarBtn icon="format_list_bulleted" onClick={() => applyFormatting('insertUnorderedList')} />
           <ToolbarBtn icon="format_list_numbered" onClick={() => applyFormatting('insertOrderedList')} />
           <Divider />
           <ToolbarDropdown label="Botão" items={[
-            { label: 'Botão Principal', action: () => insertButton('primary') },
-            { label: 'Botão Minimalista', action: () => insertButton('outline') }
+            { label: 'Botão Principal', action: () => { setModalData(d => ({ ...d, type: 'primary' })); setActiveModal('button'); } },
+            { label: 'Botão Minimalista', action: () => { setModalData(d => ({ ...d, type: 'outline' })); setActiveModal('button'); } }
           ]} />
           <Divider />
           <ToolbarDropdown label="Mais" items={[
@@ -584,6 +592,63 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           </div>
         </main>
       </div>
+
+      {/* Insert Modal */}
+      {activeModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center animate-fade-in p-6">
+          <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-[440px] rounded-[32px] p-8 shadow-2xl animate-slide-up">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-[18px] font-bold text-white font-newsreader">
+                {activeModal === 'link' && 'Inserir link'}
+                {activeModal === 'image' && 'Inserir imagem'}
+                {activeModal === 'audio' && 'Inserir áudio'}
+                {activeModal === 'video' && 'Inserir vídeo'}
+                {activeModal === 'button' && 'Configurar botão'}
+              </h3>
+              <button onClick={() => setActiveModal(null)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {activeModal === 'button' && (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">Texto do Botão</label>
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Clique Aqui"
+                    value={modalData.title}
+                    onChange={(e) => setModalData(d => ({ ...d, title: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+                  />
+                </div>
+              )}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">
+                  {activeModal === 'link' ? 'URL do Link' : activeModal === 'image' ? 'URL da Imagem' : activeModal === 'audio' ? 'URL do MP3' : activeModal === 'video' ? 'URL do vídeo (Youtube/MP4)' : 'Link de Destino'}
+                </label>
+                <input
+                  autoFocus={activeModal !== 'button'}
+                  type="text"
+                  placeholder="https://..."
+                  value={modalData.url}
+                  onChange={(e) => setModalData(d => ({ ...d, url: e.target.value }))}
+                  onKeyDown={(e) => e.key === 'Enter' && handleModalConfirm()}
+                  className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleModalConfirm}
+              className="w-full mt-10 py-4 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-[13px] font-black uppercase tracking-[0.15em] rounded-2xl transition-all shadow-lg active:scale-[0.98] shadow-blue-500/20"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* AI Inspiration Panel */}
       {showAI && (
