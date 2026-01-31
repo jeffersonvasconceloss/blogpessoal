@@ -302,298 +302,288 @@ const EditorView: React.FC<EditorProps> = ({ article, onPublish, onCancel }) => 
           </button>
         </div>
       </div>
-      <Divider />
-      <button
-        onClick={() => setShowAI(!showAI)}
-        className={`p-2 rounded-lg transition-all flex items-center gap-1 ${showAI ? 'bg-orange-50 dark:bg-primary/20 text-[#ff6b00]' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-50 dark:hover:bg-white/5'}`}
-      >
-        <span className={`material-symbols-outlined text-[18px] ${showAI ? 'filled-icon font-bold' : ''}`}>auto_awesome</span>
-        <span className="text-[10px] font-bold uppercase tracking-wider hidden md:block">Inspirar</span>
-      </button>
-    </div>
-      </div >
 
-  {/* Editor Surface */ }
-  < div className = "flex-1 overflow-y-auto bg-white dark:bg-background-dark no-scrollbar scroll-smooth" >
-    <main className="max-w-[720px] mx-auto w-full px-8 py-16 animate-fade-in relative">
+      {/* Editor Surface */}
+      <div className="flex-1 overflow-y-auto bg-white dark:bg-background-dark no-scrollbar scroll-smooth">
+        <main className="max-w-[720px] mx-auto w-full px-8 py-16 animate-fade-in relative">
 
-      {/* Dynamic Component: Biblioteca (Compact Notion Style) */}
-      {category === 'Biblioteca' && (
-        <div className="mb-12 flex gap-8 items-start border-b border-gray-100 dark:border-white/5 pb-12 group">
-          <div
-            onClick={() => document.getElementById('cover-upload')?.click()}
-            className="relative w-[120px] aspect-[3/4] rounded-lg shadow-xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10"
-          >
-            {bookCover ? (
-              <img src={bookCover} alt="Capa" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                <span className="material-symbols-outlined text-3xl">add_photo_alternate</span>
+          {/* Dynamic Component: Biblioteca (Compact Notion Style) */}
+          {category === 'Biblioteca' && (
+            <div className="mb-12 flex gap-8 items-start border-b border-gray-100 dark:border-white/5 pb-12 group">
+              <div
+                onClick={() => document.getElementById('cover-upload')?.click()}
+                className="relative w-[120px] aspect-[3/4] rounded-lg shadow-xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+              >
+                {bookCover ? (
+                  <img src={bookCover} alt="Capa" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                    <span className="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                  </div>
+                )}
+                <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setBookCover(reader.result as string);
+                    reader.readAsDataURL(file);
+                  }
+                }} />
               </div>
-            )}
-            <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => setBookCover(reader.result as string);
-                reader.readAsDataURL(file);
-              }
-            }} />
-          </div>
-          <div className="flex-1 space-y-4 pt-1">
-            <input
-              type="text"
-              placeholder="Título do Livro"
-              value={bookTitle}
-              onChange={(e) => setBookTitle(e.target.value)}
-              className="w-full bg-transparent border-none focus:ring-0 p-0 text-2xl font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder:text-gray-200"
-            />
-            <input
-              type="text"
-              placeholder="Autor do Livro"
-              value={bookAuthor}
-              onChange={(e) => setBookAuthor(e.target.value)}
-              className="w-full bg-transparent border-none focus:ring-0 p-0 text-[15px] font-medium text-gray-400 placeholder:text-gray-200"
-            />
-            <div className="flex items-center gap-6 pt-2">
+              <div className="flex-1 space-y-4 pt-1">
+                <input
+                  type="text"
+                  placeholder="Título do Livro"
+                  value={bookTitle}
+                  onChange={(e) => setBookTitle(e.target.value)}
+                  className="w-full bg-transparent border-none focus:ring-0 p-0 text-2xl font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder:text-gray-200"
+                />
+                <input
+                  type="text"
+                  placeholder="Autor do Livro"
+                  value={bookAuthor}
+                  onChange={(e) => setBookAuthor(e.target.value)}
+                  className="w-full bg-transparent border-none focus:ring-0 p-0 text-[15px] font-medium text-gray-400 placeholder:text-gray-200"
+                />
+                <div className="flex items-center gap-6 pt-2">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
+                    <select
+                      value={bookStatus}
+                      onChange={(e) => setBookStatus(e.target.value as any)}
+                      className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary cursor-pointer outline-none"
+                    >
+                      <option value="Lendo">Lendo</option>
+                      <option value="Lido">Lido</option>
+                      <option value="Quero Ler">Quero Ler</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Nota</span>
+                    <input
+                      type="number" step="0.1" min="0" max="10"
+                      value={bookRating}
+                      onChange={(e) => setBookRating(Number(e.target.value))}
+                      className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary w-12 outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Dynamic Component: Projeto */}
+          {category === 'Projeto' && (
+            <div className="mb-12 grid grid-cols-2 gap-x-12 gap-y-6 text-[13px] border-b border-gray-100 dark:border-white/5 pb-10">
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
-                <select
-                  value={bookStatus}
-                  onChange={(e) => setBookStatus(e.target.value as any)}
-                  className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary cursor-pointer outline-none"
-                >
-                  <option value="Lendo">Lendo</option>
-                  <option value="Lido">Lido</option>
-                  <option value="Quero Ler">Quero Ler</option>
+                <select value={projectStatus} onChange={(e) => setProjectStatus(e.target.value as any)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white">
+                  <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+                  <option value="Concluído">Concluído</option>
+                  <option value="Pausado">Pausado</option>
                 </select>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Nota</span>
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Tecnologias</span>
+                <input type="text" placeholder="React, AWS..." value={projectTech} onChange={(e) => setProjectTech(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white placeholder:text-gray-200" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Link</span>
+                <input type="text" placeholder="https://..." value={projectLink} onChange={(e) => setProjectLink(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Github</span>
+                <input type="text" placeholder="https://github..." value={projectGithub} onChange={(e) => setProjectGithub(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
+              </div>
+            </div>
+          )}
+
+          {/* Dynamic Component: Pensamento */}
+          {category === 'Pensamento' && (
+            <div className="mb-12">
+              <textarea
+                placeholder="Qual o insight principal?"
+                value={thoughtInsight}
+                onChange={(e) => setThoughtInsight(e.target.value)}
+                className="w-full bg-transparent border-none focus:ring-0 p-0 text-3xl font-serif italic text-primary placeholder:text-gray-100 resize-none leading-relaxed"
+                rows={2}
+              />
+              <input
+                type="text"
+                placeholder="Fonte de inspiração..."
+                value={thoughtSource}
+                onChange={(e) => setThoughtSource(e.target.value)}
+                className="w-full bg-transparent border-none focus:ring-0 p-0 mt-4 text-[12px] font-bold uppercase tracking-[0.2em] text-gray-300 placeholder:text-gray-100"
+              />
+              <div className="mt-8 border-b border-gray-100 dark:border-white/5 opacity-50"></div>
+            </div>
+          )}
+
+          {/* Dynamic Component: Escrita */}
+          {category === 'Escrita' && (
+            <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo</label>
                 <input
-                  type="number" step="0.1" min="0" max="10"
-                  value={bookRating}
-                  onChange={(e) => setBookRating(Number(e.target.value))}
-                  className="bg-transparent border-none focus:ring-0 p-0 text-[13px] font-bold text-primary w-12 outline-none"
+                  type="text"
+                  placeholder="Ex: Ensaio, Conto, Ensaio Técnico"
+                  value={writingGenre}
+                  onChange={(e) => setWritingGenre(e.target.value)}
+                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Público-Alvo</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Estudantes, Desenvolvedores, Geral"
+                  value={writingAudience}
+                  onChange={(e) => setWritingAudience(e.target.value)}
+                  className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
                 />
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* Dynamic Component: Projeto */}
-      {category === 'Projeto' && (
-        <div className="mb-12 grid grid-cols-2 gap-x-12 gap-y-6 text-[13px] border-b border-gray-100 dark:border-white/5 pb-10">
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Status</span>
-            <select value={projectStatus} onChange={(e) => setProjectStatus(e.target.value as any)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white">
-              <option value="Em Desenvolvimento">Em Desenvolvimento</option>
-              <option value="Concluído">Concluído</option>
-              <option value="Pausado">Pausado</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Tecnologias</span>
-            <input type="text" placeholder="React, AWS..." value={projectTech} onChange={(e) => setProjectTech(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold dark:text-white placeholder:text-gray-200" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Live Link</span>
-            <input type="text" placeholder="https://..." value={projectLink} onChange={(e) => setProjectLink(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Github</span>
-            <input type="text" placeholder="https://github..." value={projectGithub} onChange={(e) => setProjectGithub(e.target.value)} className="bg-transparent border-none focus:ring-0 p-0 font-bold text-blue-500 placeholder:text-gray-200" />
-          </div>
-        </div>
-      )}
+          <div className="flex flex-col gap-2">
+            {category !== 'Biblioteca' && (
+              <>
+                <textarea
+                  ref={titleRef}
+                  placeholder="Título sem nome"
+                  className="w-full bg-transparent border-none focus:ring-0 text-[42px] font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-tight no-scrollbar"
+                  value={title}
+                  rows={1}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
 
-      {/* Dynamic Component: Pensamento */}
-      {category === 'Pensamento' && (
-        <div className="mb-12">
-          <textarea
-            placeholder="Qual o insight principal?"
-            value={thoughtInsight}
-            onChange={(e) => setThoughtInsight(e.target.value)}
-            className="w-full bg-transparent border-none focus:ring-0 p-0 text-3xl font-serif italic text-primary placeholder:text-gray-100 resize-none leading-relaxed"
-            rows={2}
-          />
-          <input
-            type="text"
-            placeholder="Fonte de inspiração..."
-            value={thoughtSource}
-            onChange={(e) => setThoughtSource(e.target.value)}
-            className="w-full bg-transparent border-none focus:ring-0 p-0 mt-4 text-[12px] font-bold uppercase tracking-[0.2em] text-gray-300 placeholder:text-gray-100"
-          />
-          <div className="mt-8 border-b border-gray-100 dark:border-white/5 opacity-50"></div>
-        </div>
-      )}
+                <textarea
+                  ref={excerptRef}
+                  placeholder="Adicionar subtítulo..."
+                  className="w-full bg-transparent border-none focus:ring-0 text-xl font-medium text-gray-400 dark:text-slate-500 placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-relaxed no-scrollbar"
+                  value={excerpt}
+                  rows={1}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                />
+              </>
+            )}
 
-      {/* Dynamic Component: Escrita */}
-      {category === 'Escrita' && (
-        <div className="mb-12 p-8 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 animate-slide-up grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Gênero / Estilo</label>
-            <input
-              type="text"
-              placeholder="Ex: Ensaio, Conto, Ensaio Técnico"
-              value={writingGenre}
-              onChange={(e) => setWritingGenre(e.target.value)}
-              className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-            />
+            <div className={`mt-10 transition-all duration-500 ${isFocused ? 'opacity-100' : 'opacity-90'}`}>
+              <div
+                ref={contentEditableRef}
+                contentEditable
+                suppressContentEditableWarning
+                spellCheck="true"
+                lang="pt-BR"
+                data-placeholder="Escreva sua reflexão aqui..."
+                onInput={(e) => {
+                  contentValueRef.current = e.currentTarget.innerHTML;
+                }}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-gray-100 dark:placeholder:text-white/5 min-h-[60vh] pb-64 no-scrollbar leading-[1.8] outline-none"
+                style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
+              ></div>
+            </div>
           </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Público-Alvo</label>
-            <input
-              type="text"
-              placeholder="Ex: Estudantes, Desenvolvedores, Geral"
-              value={writingAudience}
-              onChange={(e) => setWritingAudience(e.target.value)}
-              className="w-full bg-white dark:bg-background-dark border border-gray-100 dark:border-white/5 focus:border-primary/40 rounded-xl px-4 py-3 text-[14px] font-medium dark:text-white outline-none"
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-2">
-        {category !== 'Biblioteca' && (
-          <>
-            <textarea
-              ref={titleRef}
-              placeholder="Título sem nome"
-              className="w-full bg-transparent border-none focus:ring-0 text-[42px] font-newsreader font-bold text-[#1a1a1a] dark:text-white placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-tight no-scrollbar"
-              value={title}
-              rows={1}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-
-            <textarea
-              ref={excerptRef}
-              placeholder="Adicionar subtítulo..."
-              className="w-full bg-transparent border-none focus:ring-0 text-xl font-medium text-gray-400 dark:text-slate-500 placeholder-gray-100 dark:placeholder-white/10 resize-none p-0 leading-relaxed no-scrollbar"
-              value={excerpt}
-              rows={1}
-              onChange={(e) => setExcerpt(e.target.value)}
-            />
-          </>
-        )}
-
-        <div className={`mt-10 transition-all duration-500 ${isFocused ? 'opacity-100' : 'opacity-90'}`}>
-          <div
-            ref={contentEditableRef}
-            contentEditable
-            suppressContentEditableWarning
-            spellCheck="true"
-            lang="pt-BR"
-            data-placeholder="Escreva sua reflexão aqui..."
-            onInput={(e) => {
-              contentValueRef.current = e.currentTarget.innerHTML;
-            }}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            className="w-full bg-transparent border-none focus:outline-none font-serif text-[#1a1a1a] dark:text-slate-200 placeholder:text-gray-100 dark:placeholder:text-white/5 min-h-[60vh] pb-64 no-scrollbar leading-[1.8] outline-none"
-            style={{ direction: 'ltr', textAlign: 'left', fontSize: `${fontSize}px` }}
-          ></div>
-        </div>
-      </div>
-    </main>
+        </main>
       </div >
 
-  {/* Insert Modal */ }
-{
-  activeModal && (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center animate-fade-in p-6">
-      <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-[440px] rounded-[32px] p-8 shadow-2xl animate-slide-up">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-[18px] font-bold text-white font-newsreader">
-            {activeModal === 'link' && 'Inserir link'}
-            {activeModal === 'image' && 'Inserir imagem'}
-            {activeModal === 'audio' && 'Inserir áudio'}
-            {activeModal === 'video' && 'Inserir vídeo'}
-            {activeModal === 'button' && 'Configurar botão'}
-          </h3>
-          <button onClick={() => setActiveModal(null)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
-
-        <div className="space-y-6">
-          {activeModal === 'button' && (
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">Texto do Botão</label>
-              <input
-                autoFocus
-                type="text"
-                placeholder="Clique Aqui"
-                value={modalData.title}
-                onChange={(e) => setModalData(d => ({ ...d, title: e.target.value }))}
-                className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">
-              {activeModal === 'link' ? 'URL do Link' : activeModal === 'image' ? 'URL da Imagem' : activeModal === 'audio' ? 'URL do MP3' : activeModal === 'video' ? 'URL do vídeo (Youtube/MP4)' : 'Link de Destino'}
-            </label>
-            <input
-              autoFocus={activeModal !== 'button'}
-              type="text"
-              placeholder="https://..."
-              value={modalData.url}
-              onChange={(e) => setModalData(d => ({ ...d, url: e.target.value }))}
-              onKeyDown={(e) => e.key === 'Enter' && handleModalConfirm()}
-              className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
-            />
-          </div>
-        </div>
-
-        <button
-          onClick={handleModalConfirm}
-          className="w-full mt-10 py-4 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-[13px] font-black uppercase tracking-[0.15em] rounded-2xl transition-all shadow-lg active:scale-[0.98] shadow-blue-500/20"
-        >
-          OK
-        </button>
-      </div>
-    </div>
-  )
-}
-
-{/* AI Inspiration Panel */ }
-{
-  showAI && (
-    <div className="fixed bottom-12 right-12 w-80 bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden z-[100] animate-slide-up">
-      <div className="p-4 bg-orange-50/50 dark:bg-primary/10 border-b border-orange-100 dark:border-primary/20 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#ff6b00] text-[18px] font-bold">auto_awesome</span>
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff6b00]">Poder Criativo</h4>
-        </div>
-        <button onClick={() => setShowAI(false)} className="text-orange-300 dark:text-primary/40 hover:text-[#ff6b00] dark:hover:text-primary">
-          <span className="material-symbols-outlined text-[18px]">close</span>
-        </button>
-      </div>
-      <div className="p-5 space-y-4">
-        <button
-          onClick={getInspiration}
-          disabled={loadingAI}
-          className="w-full py-3.5 bg-[#1a1a1a] dark:bg-primary text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
-        >
-          {loadingAI ? <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> : null}
-          {loadingAI ? 'Invocando...' : 'Pedir Ajuda à Musa'}
-        </button>
-
-        {inspirations.length > 0 && (
-          <div className="space-y-2 max-h-64 overflow-y-auto pr-1 no-scrollbar scroll-smooth">
-            {inspirations.map((insp, idx) => (
-              <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-[13px] text-gray-600 dark:text-slate-300 italic border border-gray-100/50 dark:border-white/5 leading-relaxed cursor-pointer hover:bg-orange-50 dark:hover:bg-primary/10 transition-colors">
-                "{insp}"
+      {/* Insert Modal */}
+      {
+        activeModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center animate-fade-in p-6">
+            <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-[440px] rounded-[32px] p-8 shadow-2xl animate-slide-up">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-[18px] font-bold text-white font-newsreader">
+                  {activeModal === 'link' && 'Inserir link'}
+                  {activeModal === 'image' && 'Inserir imagem'}
+                  {activeModal === 'audio' && 'Inserir áudio'}
+                  {activeModal === 'video' && 'Inserir vídeo'}
+                  {activeModal === 'button' && 'Configurar botão'}
+                </h3>
+                <button onClick={() => setActiveModal(null)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
               </div>
-            ))}
+
+              <div className="space-y-6">
+                {activeModal === 'button' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">Texto do Botão</label>
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Clique Aqui"
+                      value={modalData.title}
+                      onChange={(e) => setModalData(d => ({ ...d, title: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+                    />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest px-1">
+                    {activeModal === 'link' ? 'URL do Link' : activeModal === 'image' ? 'URL da Imagem' : activeModal === 'audio' ? 'URL do MP3' : activeModal === 'video' ? 'URL do vídeo (Youtube/MP4)' : 'Link de Destino'}
+                  </label>
+                  <input
+                    autoFocus={activeModal !== 'button'}
+                    type="text"
+                    placeholder="https://..."
+                    value={modalData.url}
+                    onChange={(e) => setModalData(d => ({ ...d, url: e.target.value }))}
+                    onKeyDown={(e) => e.key === 'Enter' && handleModalConfirm()}
+                    className="w-full bg-white/5 border border-white/10 focus:border-primary/40 rounded-2xl px-5 py-4 text-[14px] font-medium text-white outline-none transition-all placeholder:text-white/10"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleModalConfirm}
+                className="w-full mt-10 py-4 bg-[#3b82f6] hover:bg-[#2563eb] text-white text-[13px] font-black uppercase tracking-[0.15em] rounded-2xl transition-all shadow-lg active:scale-[0.98] shadow-blue-500/20"
+              >
+                OK
+              </button>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-  )
-}
+        )
+      }
+
+      {/* AI Inspiration Panel */}
+      {
+        showAI && (
+          <div className="fixed bottom-12 right-12 w-80 bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden z-[100] animate-slide-up">
+            <div className="p-4 bg-orange-50/50 dark:bg-primary/10 border-b border-orange-100 dark:border-primary/20 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#ff6b00] text-[18px] font-bold">auto_awesome</span>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff6b00]">Poder Criativo</h4>
+              </div>
+              <button onClick={() => setShowAI(false)} className="text-orange-300 dark:text-primary/40 hover:text-[#ff6b00] dark:hover:text-primary">
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <button
+                onClick={getInspiration}
+                disabled={loadingAI}
+                className="w-full py-3.5 bg-[#1a1a1a] dark:bg-primary text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
+              >
+                {loadingAI ? <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> : null}
+                {loadingAI ? 'Invocando...' : 'Pedir Ajuda à Musa'}
+              </button>
+
+              {inspirations.length > 0 && (
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-1 no-scrollbar scroll-smooth">
+                  {inspirations.map((insp, idx) => (
+                    <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl text-[13px] text-gray-600 dark:text-slate-300 italic border border-gray-100/50 dark:border-white/5 leading-relaxed cursor-pointer hover:bg-orange-50 dark:hover:bg-primary/10 transition-colors">
+                      "{insp}"
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
     </div >
   );
 };
